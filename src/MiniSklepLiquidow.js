@@ -293,7 +293,7 @@ const sendOrder = async () => {
 
       {/* ===== ILOŚĆ ===== */}
       <h3>Ilość (ml)</h3>
-      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:18, WebkitAppearance:"none"}}/>
+      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:20, WebkitAppearance:"none"}}/>
 
       <button onClick={addToCart} style={{width:"100%", marginTop:10, padding:12, borderRadius:8, background:"#22c55e", color:"#fff", border:"none"}}>➕ Dodaj do koszyka</button>
 
