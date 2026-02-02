@@ -22,12 +22,23 @@ export default function MiniSklepLiquidow() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  useEffect(() => {
-    fetch(SHEET_API)
-      .then(r => r.json())
-      .then(d => setInventory(d))
-      .catch(console.error);
-  }, []);
+useEffect(() => {
+  // 1. Najpierw wczytaj zapisany stan z pamięci przeglądarki
+  const cached = localStorage.getItem("inventoryCache");
+  if (cached) {
+    setInventory(JSON.parse(cached));
+  }
+
+  // 2. Potem pobierz świeże dane z Apps Script
+  fetch(SHEET_API)
+    .then(r => r.json())
+    .then(d => {
+      setInventory(d);
+      localStorage.setItem("inventoryCache", JSON.stringify(d));
+    })
+    .catch(console.error);
+}, []);
+
 
   useEffect(() => { if (strength === 36 && base === "nikotyna") setBase(null); }, [strength, base]);
   useEffect(() => { if (base === "nikotyna" && strength === 36) setStrength(null); }, [base, strength]);
