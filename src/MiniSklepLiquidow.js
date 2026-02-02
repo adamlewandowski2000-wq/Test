@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "https://script.google.com/macros/s/AKfycbwI5vGVM7bfn_1QwZiMWjdpS44AX6XMOavVZ3osRuB89xZa1RotJ8vrqb-QVB6yG3P-/exec";
+const SHEET_API = "https://script.google.com/macros/s/AKfycbxVjhl79CVHvrV-QcuqeVf-NMs-TR-hP430XCPBL33rTBu3VBGSNhHnMlFlCWoDzAXn/exec";
 
 export default function MiniSklepLiquidow() {
   const [inventory, setInventory] = useState({});
@@ -221,7 +221,7 @@ const sendOrder = async () => {
 
       {/* ===== IMIĘ ===== */}
       <input placeholder="Imię" value={name} onChange={e=>setName(e.target.value)}
-        style={{width:"50%", padding:"4px 6px", marginBottom:10, fontSize:14}} />
+        style={{width:"50%", padding:"4px 6px", marginBottom:10, fontSize:18}} />
 
   
 
@@ -293,7 +293,7 @@ const sendOrder = async () => {
 
       {/* ===== ILOŚĆ ===== */}
       <h3>Ilość (ml)</h3>
-      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:14, WebkitAppearance:"none"}}/>
+      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:18, WebkitAppearance:"none"}}/>
 
       <button onClick={addToCart} style={{width:"100%", marginTop:10, padding:12, borderRadius:8, background:"#22c55e", color:"#fff", border:"none"}}>➕ Dodaj do koszyka</button>
 
