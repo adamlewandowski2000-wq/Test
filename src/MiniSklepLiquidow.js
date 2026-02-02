@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "https://script.google.com/macros/s/AKfycbzM7plhutFptl4THrnDiKS5_VpV-86cU95VQSDHruAC0CbsilbIjb94wRQra7MJYnS4/exec";
+const SHEET_API = "https://script.google.com/macros/s/AKfycbwKDJsuRWHsSfwCOPsPxk_NuzM9eRU5SH_WXqOSKiq_6uGfEuaExFJYdBgyMwnReaO0/exec";
 
 export default function MiniSklepLiquidow() {
   const [inventory, setInventory] = useState({});
@@ -22,23 +22,12 @@ export default function MiniSklepLiquidow() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-useEffect(() => {
-  // 1. Najpierw wczytaj zapisany stan z pamięci przeglądarki
-  const cached = localStorage.getItem("inventoryCache");
-  if (cached) {
-    setInventory(JSON.parse(cached));
-  }
-
-  // 2. Potem pobierz świeże dane z Apps Script
-  fetch(SHEET_API)
-    .then(r => r.json())
-    .then(d => {
-      setInventory(d);
-      localStorage.setItem("inventoryCache", JSON.stringify(d));
-    })
-    .catch(console.error);
-}, []);
-
+  useEffect(() => {
+    fetch(SHEET_API)
+      .then(r => r.json())
+      .then(d => setInventory(d))
+      .catch(console.error);
+  }, []);
 
   useEffect(() => { if (strength === 36 && base === "nikotyna") setBase(null); }, [strength, base]);
   useEffect(() => { if (base === "nikotyna" && strength === 36) setStrength(null); }, [base, strength]);
@@ -232,7 +221,7 @@ const sendOrder = async () => {
 
       {/* ===== IMIĘ ===== */}
       <input placeholder="Imię" value={name} onChange={e=>setName(e.target.value)}
-        style={{width:"50%", padding:"4px 6px", marginBottom:10, fontSize:18}} />
+        style={{width:"50%", padding:"4px 6px", marginBottom:10, fontSize:14}} />
 
   
 
@@ -304,7 +293,7 @@ const sendOrder = async () => {
 
       {/* ===== ILOŚĆ ===== */}
       <h3>Ilość (ml)</h3>
-      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:20, WebkitAppearance:"none"}}/>
+      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:14, WebkitAppearance:"none"}}/>
 
       <button onClick={addToCart} style={{width:"100%", marginTop:10, padding:12, borderRadius:8, background:"#22c55e", color:"#fff", border:"none"}}>➕ Dodaj do koszyka</button>
 
