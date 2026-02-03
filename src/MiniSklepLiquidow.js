@@ -201,7 +201,7 @@ export default function MiniSklepLiquidow() {
       {id:27,name:"Truskawka, Mango, Granat, Efekt chłodu"},
       {id:28,name:"Ananas, Cytryna, Efekt chłodu"},
       {id:29,name:"Ananas, Liczi, Efekt chłodu"},
-      {id:30,name:"Smoczy owoc, Kiwi, Truskawka"},
+      {id:30,name:"Smoczy owoc, Kiwi, Guawa, Truskawka"},
       {id:31,name:"Smoczy owoc, Truskawka, Efekt chłodu"},
       {id:32,name:"Kokos, Banan, Kiwi"}
     ],
