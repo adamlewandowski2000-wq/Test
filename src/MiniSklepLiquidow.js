@@ -253,7 +253,8 @@ export default function MiniSklepLiquidow() {
 
               return <label key={f.id} style={{
                 display:"flex", alignItems:"center", fontSize:13, 
-                background:`linear-gradient(90deg, ${light}, #fff)`, borderRadius:6, padding:"4px 6px",
+                background: stock===0 ? "#f87171" : `linear-gradient(90deg, ${light}, #fff)`,
+                borderRadius:6, padding:"4px 6px",
                 cursor:stock===0?"not-allowed":"pointer", opacity:stock===0?0.6:1
               }}
               onClick={()=>{
@@ -310,7 +311,7 @@ export default function MiniSklepLiquidow() {
 
       {message && <div style={{marginTop:8, padding:8, background:messageType==="error"?"#fecaca":"#bbf7d0", borderRadius:6, textAlign:"center"}}>{message}</div>}
 
-      <h3>Koszyk</h3>
+       <h3>Koszyk</h3>
       {cart.map((i,idx)=><div key={idx}>{i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł <button onClick={()=>removeItem(idx)}>❌</button></div>)}
 
       <h3>Suma: {total.toFixed(2)} zł</h3>
