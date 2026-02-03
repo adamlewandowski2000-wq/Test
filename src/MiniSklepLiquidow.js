@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "https://script.google.com/macros/s/AKfycbxIb2H2fFVqyZ4NyLDAS3ieEmezUnzvtwVfQFyt9jGdETZ1aFxI1yQvOSeS1bY4gjLm/exec";
+const SHEET_API = "https://script.google.com/macros/s/AKfycbwKDJsuRWHsSfwCOPsPxk_NuzM9eRU5SH_WXqOSKiq_6uGfEuaExFJYdBgyMwnReaO0/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -31,7 +31,6 @@ export default function MiniSklepLiquidow() {
     };
 
     fetchInventory(); // od razu
-
     const interval = setInterval(fetchInventory, 5000); // co 5s
     return () => clearInterval(interval);
   }, []);
@@ -313,4 +312,4 @@ export default function MiniSklepLiquidow() {
 
       <h3>Suma: {total.toFixed(2)} zł</h3>
 
-      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending
+      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius
