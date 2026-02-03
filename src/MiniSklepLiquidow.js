@@ -312,4 +312,4 @@ export default function MiniSklepLiquidow() {
 
       <h3>Suma: {total.toFixed(2)} zł</h3>
 
-      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius
+      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border
