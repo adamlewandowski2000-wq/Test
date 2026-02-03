@@ -310,6 +310,4 @@ export default function MiniSklepLiquidow() {
       <h3>Koszyk</h3>
       {cart.map((i,idx)=><div key={idx}>{i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł <button onClick={()=>removeItem(idx)}>❌</button></div>)}
 
-      <h3>Suma: {total.toFixed(2)} zł</h3>
-
-      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border
+     <h3>Suma: {total.toFixed(2)} zł</h3> <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}> {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"} </button> </div> ); }
