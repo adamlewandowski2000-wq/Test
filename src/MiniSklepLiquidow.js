@@ -4,7 +4,7 @@ import bg from "./assets/bg-liquid.png";
 const SHEET_API = "https://script.google.com/macros/s/AKfycbxIb2H2fFVqyZ4NyLDAS3ieEmezUnzvtwVfQFyt9jGdETZ1aFxI1yQvOSeS1bY4gjLm/exec";
 
 export default function MiniSklepLiquidow() {
-  const [inventory, setInventory] = useState({});
+  const [serverInventory, setServerInventory] = useState({});
   const [name, setName] = useState("");
   const [selectedFlavor, setSelectedFlavor] = useState(null);
   const [ml, setMl] = useState("");
@@ -26,7 +26,7 @@ export default function MiniSklepLiquidow() {
     const fetchInventory = () => {
       fetch(SHEET_API)
         .then(r => r.json())
-        .then(d => setInventory(d))
+        .then(d => setServerInventory(d))
         .catch(console.error);
     };
 
@@ -39,6 +39,19 @@ export default function MiniSklepLiquidow() {
   useEffect(() => { if (strength === 36 && base === "nikotyna") setBase(null); }, [strength, base]);
   useEffect(() => { if (base === "nikotyna" && strength === 36) setStrength(null); }, [base, strength]);
 
+  // ==================== OBSŁUGA DOSTĘPNOŚCI ====================
+  const getReservedInCart = (flavorId) =>
+    cart
+      .filter(i => i.flavor.id === flavorId)
+      .reduce((s, i) => s + i.ml / 10, 0);
+
+  const getAvailableMl = (flavorId) => {
+    const server = serverInventory[flavorId] || 0;
+    const reserved = getReservedInCart(flavorId);
+    return Math.max(0, (server - reserved) * 10);
+  };
+
+  // ==================== CENA ====================
   const calculatePrice = (volume, strength, baseType) => {
     let price = 0;
     let p10 = 0, p60 = 0;
@@ -78,23 +91,25 @@ export default function MiniSklepLiquidow() {
     return price;
   };
 
+  // ==================== DODAWANIE DO KOSZYKA ====================
   const addToCart = () => {
     if (!name || !selectedFlavor || !ml || !strength || !base) { showMessage("❌ Uzupełnij formularz","error"); return; }
     if (ml%10!==0){ showMessage("❌ Tylko co 10ml","error"); return; }
-    const maxMl = (inventory[selectedFlavor.id]||0)*10;
+
+    const maxMl = getAvailableMl(selectedFlavor.id);
     if (ml > maxMl){ showMessage(`❌ Max ${maxMl}ml`,"error"); return; }
+
     const price = calculatePrice(Number(ml), strength, base);
     setCart([...cart, { flavor:selectedFlavor, ml:Number(ml), strength, base, price }]);
-    setInventory(prev => ({ ...prev, [selectedFlavor.id]: prev[selectedFlavor.id]-ml/10 }));
-    setMl(""); showMessage("✅ Dodano do koszyka","success");
+    setMl(""); 
+    showMessage("✅ Dodano do koszyka","success");
   };
 
   const removeItem = idx => {
-    const item = cart[idx];
-    setInventory(prev => ({ ...prev, [item.flavor.id]: prev[item.flavor.id]+item.ml/10 }));
     setCart(cart.filter((_,i)=>i!==idx));
   };
 
+  // ==================== WYŚLIJ ZAMÓWIENIE ====================
   const sendOrder = async () => {
     if(cart.length===0){ showMessage("❌ Koszyk pusty","error"); return; }
     if(isSending) return;
@@ -126,10 +141,10 @@ export default function MiniSklepLiquidow() {
       showMessage("✅ Zamówienie wysłane!","success");
       setCart([]);
 
-      // ===== odświeżenie inventory po zamówieniu =====
+      // odświeżenie inventory po zamówieniu
       const res = await fetch(SHEET_API);
       const newInventory = await res.json();
-      setInventory(newInventory);
+      setServerInventory(newInventory);
 
     } catch {
       showMessage("❌ Błąd wysyłki","error");
@@ -231,7 +246,7 @@ export default function MiniSklepLiquidow() {
           <summary style={{fontWeight:"bold", padding:6}}>{cat}</summary>
           <div style={{padding:6, display:"flex", flexDirection:"column", gap:4}}>
             {flavors.map(f=>{
-              const stock=(inventory[f.id]||0)*10;
+              const stock = getAvailableMl(f.id);
               const stockColor = stock===0?"red":stock<120?"#facc15":"#22c55e";
 
               return <label key={f.id} style={{
@@ -298,9 +313,4 @@ export default function MiniSklepLiquidow() {
 
       <h3>Suma: {total.toFixed(2)} zł</h3>
 
-      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}>
-        {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
-      </button>
-    </div>
-  );
-}
+      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending
