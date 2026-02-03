@@ -138,12 +138,15 @@ export default function MiniSklepLiquidow() {
       });
 
       showMessage("✅ Zamówienie wysłane!","success");
-      setCart([]);
 
-      // odświeżenie inventory po zamówieniu
-      const res = await fetch(SHEET_API);
-      const newInventory = await res.json();
+      // ==================== AKTUALIZACJA LOKALNEGO INVENTORY ====================
+      const newInventory = { ...serverInventory };
+      Object.entries(usedAromas).forEach(([id, used]) => {
+        newInventory[id] = Math.max(0, (newInventory[id] || 0) - used);
+      });
       setServerInventory(newInventory);
+
+      setCart([]);
 
     } catch {
       showMessage("❌ Błąd wysyłki","error");
@@ -163,7 +166,7 @@ export default function MiniSklepLiquidow() {
     "Inne smaki":["#34d399","#bbf7d0"]
   };
 
-  const flavorCategories = {
+ const flavorCategories = {
     "Miksy owocowe":[
       {id:1,name:"Czerwone owoce, Czarna porzeczka, Truskawka, Jeżyna, Malina, Jagoda, Efekt chłodu"},
       {id:2,name:"Czerwone owoce, Truskawka, Czarna porzeczka, Efekt lodowaty"},
@@ -310,4 +313,11 @@ export default function MiniSklepLiquidow() {
       <h3>Koszyk</h3>
       {cart.map((i,idx)=><div key={idx}>{i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł <button onClick={()=>removeItem(idx)}>❌</button></div>)}
 
-     <h3>Suma: {total.toFixed(2)} zł</h3> <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}> {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"} </button> </div> ); }
+      <h3>Suma: {total.toFixed(2)} zł</h3>
+
+      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}>
+        {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
+      </button>
+    </div>
+  );
+}
