@@ -1,4 +1,3 @@
-Re
 
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
