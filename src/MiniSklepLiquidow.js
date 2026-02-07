@@ -335,7 +335,7 @@ export default function MiniSklepLiquidow() {
         onClick={addToCart}
         style={{
           width: "100%",
-          marginTop: 10,
+          marginTop: 11,
           padding: 12,
           borderRadius: 8,
           background: "#22c55e",
