@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "https://script.google.com/macros/s/AKfycbwavSH_MlbG9UdLs-Bc6KNUFknfqm9yWJAGBHZEdQymiXFIgxhUX5aM_NJ0TKcpc3c/exec"; // nowy URL WebApp
+const SHEET_API = "https://script.google.com/macros/s/AKfycbxT4dFA8FpgTharHfyc_AMWJU1pxN5y_FC858iDX3vcOQ0WsmGB6sgz804-UUxWsCw/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -105,12 +105,15 @@ export default function MiniSklepLiquidow() {
     showMessage("✅ Dodano do koszyka","success");
   };
 
-  const removeItem = idx => setCart(cart.filter((_,i)=>i!==idx));
+  const removeItem = idx => {
+    setCart(cart.filter((_,i)=>i!==idx));
+  };
 
   // ==================== WYŚLIJ ZAMÓWIENIE ====================
   const sendOrder = async () => {
     if(cart.length===0){ showMessage("❌ Koszyk pusty","error"); return; }
     if(isSending) return;
+
     setIsSending(true);
 
     const orderText = cart
@@ -118,6 +121,7 @@ export default function MiniSklepLiquidow() {
       .join("\n");
 
     const total = cart.reduce((s,i)=>s+i.price,0);
+
     const usedAromas = {};
     cart.forEach(i=>{
       usedAromas[i.flavor.id]=(usedAromas[i.flavor.id]||0)+i.ml/10;
@@ -126,8 +130,7 @@ export default function MiniSklepLiquidow() {
     try {
       await fetch(SHEET_API,{
         method:"POST",
-        headers: { "Content-Type": "application/json" }, // WAŻNE!
-        body: JSON.stringify({
+        body:JSON.stringify({
           name,
           orderText,
           total,
@@ -155,7 +158,6 @@ export default function MiniSklepLiquidow() {
 
   const total = cart.reduce((s,i)=>s+i.price,0);
 
-  // ==================== KATEGORIE I SMAKI (pełne jak Twój oryginalny kod) ====================
   const categoryColors = {
     "Miksy owocowe":["#f87171","#fecaca"],
     "Owoce leśne":["#a78bfa","#e9d5ff"],
@@ -165,7 +167,7 @@ export default function MiniSklepLiquidow() {
     "Inne smaki":["#34d399","#bbf7d0"]
   };
 
-  const flavorCategories = {
+ const flavorCategories = {
     "Miksy owocowe":[
       {id:1,name:"Czerwone owoce, Czarna porzeczka, Truskawka, Jeżyna, Malina, Jagoda, Efekt chłodu"},
       {id:2,name:"Czerwone owoce, Truskawka, Czarna porzeczka, Efekt lodowaty"},
@@ -312,7 +314,7 @@ export default function MiniSklepLiquidow() {
       <h3>Koszyk</h3>
       {cart.map((i,idx)=><div key={idx}>{i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł <button onClick={()=>removeItem(idx)}>❌</button></div>)}
 
-           <h3>Suma: {total.toFixed(2)} zł</h3>
+      <h3>Suma: {total.toFixed(2)} zł</h3>
 
       <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}>
         {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
@@ -320,4 +322,3 @@ export default function MiniSklepLiquidow() {
     </div>
   );
 }
-     
