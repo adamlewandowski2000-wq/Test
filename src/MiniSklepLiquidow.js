@@ -1,3 +1,4 @@
+Da
 
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
@@ -23,7 +24,7 @@ export default function MiniSklepLiquidow() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  // ==================== FETCH INVENTORY ====================
+  // ================= FETCH INVENTORY =================
   useEffect(() => {
     const fetchInventory = () => {
       fetch(SHEET_API)
@@ -45,7 +46,7 @@ export default function MiniSklepLiquidow() {
     if (base === "nikotyna" && strength === 36) setStrength(null);
   }, [base, strength]);
 
-  // ==================== MAGAZYN ====================
+  // ================= MAGAZYN =================
   const getReservedInCart = (flavorId) =>
     cart
       .filter((i) => i.flavor.id === flavorId)
@@ -57,7 +58,7 @@ export default function MiniSklepLiquidow() {
     return Math.max(0, (server - reserved) * 10);
   };
 
-  // ==================== CENA ====================
+  // ================= CENA =================
   const calculatePrice = (volume, strength, baseType) => {
     let price = 0;
     let p10 = 0,
@@ -110,7 +111,7 @@ export default function MiniSklepLiquidow() {
     return price;
   };
 
-  // ==================== DODAJ ====================
+  // ================= DODAJ =================
   const addToCart = () => {
     if (!name || !selectedFlavor || !ml || !strength || !base) {
       showMessage("❌ Uzupełnij formularz", "error");
@@ -129,14 +130,26 @@ export default function MiniSklepLiquidow() {
     }
 
     const price = calculatePrice(Number(ml), strength, base);
-    setCart([...cart, { flavor: selectedFlavor, ml: Number(ml), strength, base, price }]);
+
+    setCart([
+      ...cart,
+      {
+        flavor: selectedFlavor,
+        ml: Number(ml),
+        strength,
+        base,
+        price
+      }
+    ]);
+
     setMl("");
     showMessage("✅ Dodano do koszyka", "success");
   };
 
-  const removeItem = (idx) => setCart(cart.filter((_, i) => i !== idx));
+  const removeItem = (idx) =>
+    setCart(cart.filter((_, i) => i !== idx));
 
-  // ==================== WYŚLIJ ====================
+  // ================= WYŚLIJ =================
   const sendOrder = async () => {
     if (cart.length === 0) {
       showMessage("❌ Koszyk pusty", "error");
@@ -147,27 +160,41 @@ export default function MiniSklepLiquidow() {
     setIsSending(true);
 
     const orderText = cart
-      .map((i) => `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`)
+      .map(
+        (i) =>
+          `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(
+            2
+          )}`
+      )
       .join("\n");
 
     const total = cart.reduce((s, i) => s + i.price, 0);
 
     const usedAromas = {};
     cart.forEach((i) => {
-      usedAromas[i.flavor.id] = (usedAromas[i.flavor.id] || 0) + i.ml / 10;
+      usedAromas[i.flavor.id] =
+        (usedAromas[i.flavor.id] || 0) + i.ml / 10;
     });
 
     try {
       await fetch(SHEET_API, {
         method: "POST",
-        body: JSON.stringify({ name, orderText, total, usedAromas })
+        body: JSON.stringify({
+          name,
+          orderText,
+          total,
+          usedAromas
+        })
       });
 
       showMessage("✅ Zamówienie wysłane!", "success");
 
       const newInventory = { ...serverInventory };
       Object.entries(usedAromas).forEach(([id, used]) => {
-        newInventory[id] = Math.max(0, (newInventory[id] || 0) - used);
+        newInventory[id] = Math.max(
+          0,
+          (newInventory[id] || 0) - used
+        );
       });
 
       setServerInventory(newInventory);
@@ -180,14 +207,15 @@ export default function MiniSklepLiquidow() {
   };
 
   const total = cart.reduce((s, i) => s + i.price, 0);
-    // ==================== KATEGORIE I SMAKI ====================
+
+  // ================= KATEGORIE =================
   const categoryColors = {
     "Miksy owocowe": ["#f87171", "#fecaca"],
     "Owoce leśne": ["#a78bfa", "#e9d5ff"],
     "Tropikalne/Egzotyczne": ["#facc15", "#fef08a"],
     "Cytrusy/kwaśne": ["#fde68a", "#fef9c3"],
     "Miętowe/mentholowe": ["#60a5fa", "#bfdbfe"],
-    "Inne smaki": ["#34d399", "#bbf7d0"],
+    "Inne smaki": ["#34d399", "#bbf7d0"]
   };
 
   const flavorCategories = {
@@ -258,8 +286,7 @@ export default function MiniSklepLiquidow() {
     ]
   };
 
-
-  // ==================== RENDER ====================
+  // ================= RENDER =================
   return (
     <div
       style={{
@@ -277,12 +304,39 @@ export default function MiniSklepLiquidow() {
         placeholder="Imię"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        style={{ width: "50%", padding: "4px 6px", marginBottom: 10, fontSize: 18 }}
+        style={{ width: "50%", marginBottom: 10 }}
       />
 
-      {/* ILOŚĆ */}
+      <h3>Smaki</h3>
+      {Object.entries(flavorCategories).map(([cat, flavors]) => {
+        const [main, light] = categoryColors[cat];
+
+        return (
+          <details key={cat} style={{ background: main, marginBottom: 10 }}>
+            <summary style={{ fontWeight: "bold" }}>{cat}</summary>
+
+            {flavors.map((f) => {
+              const stock = getAvailableMl(f.id);
+
+              return (
+                <div
+                  key={f.id}
+                  onClick={() =>
+                    stock === 0
+                      ? showMessage("❌ Brak na stanie", "error")
+                      : setSelectedFlavor(f)
+                  }
+                >
+                  {f.id}. {f.name} ({stock}ml)
+                </div>
+              );
+            })}
+          </details>
+        );
+      })}
+
       <h3>Ilość (ml)</h3>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ display: "flex", gap: 10 }}>
         <input
           type="number"
           step={10}
@@ -291,12 +345,10 @@ export default function MiniSklepLiquidow() {
           onChange={(e) => setMl(e.target.value)}
           style={{
             width: "30%",
-            padding: "4px 6px",
-            fontSize: 18,
             background: Number(ml) === 60 ? "#dcfce7" : "#fff"
           }}
         />
-        <span style={{ fontSize: 12, fontStyle: "italic" }}>
+        <span style={{ fontSize: 12 }}>
           Przy zakupie 60ml jednego smaku cena jest bardziej korzystna
         </span>
       </div>
@@ -304,11 +356,11 @@ export default function MiniSklepLiquidow() {
       <button onClick={addToCart}>➕ Dodaj do koszyka</button>
 
       <h3>Koszyk</h3>
-
       {cart.map((i, idx) => (
         <div key={idx}>
-          {i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł
-          {i.ml === 60 && <span style={{ color: "green", marginLeft: 6 }}>BEST DEAL</span>}
+          {i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} —{" "}
+          {i.price.toFixed(2)} zł
+          {i.ml === 60 && <b> BEST DEAL</b>}
           <button onClick={() => removeItem(idx)}>❌</button>
         </div>
       ))}
