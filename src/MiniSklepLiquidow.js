@@ -305,11 +305,63 @@ export default function MiniSklepLiquidow() {
       })}
 
       <h3>Ilość (ml)</h3>
-      <input type="number" step={10} min={10} value={ml} onChange={e=>setMl(e.target.value)} style={{width:"30%", padding:"4px 6px", fontSize:18, WebkitAppearance:"none"}}/>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <input
+          type="number"
+          step={10}
+          min={10}
+          value={ml}
+          onChange={(e) => setMl(e.target.value)}
+          style={{
+            width: "30%",
+            padding: "4px 6px",
+            fontSize: 18,
+            WebkitAppearance: "none",
+          }}
+        />
+        <span
+          style={{
+            fontSize: 12,
+            color: "#374151",
+            fontStyle: "italic",
+            maxWidth: 220
+          }}
+        >
+          Przy zakupie 60ml jednego smaku cena jest bardziej korzystna
+        </span>
+      </div>
 
-      <button onClick={addToCart} style={{width:"100%", marginTop:10, padding:12, borderRadius:8, background:"#22c55e", color:"#fff", border:"none"}}>➕ Dodaj do koszyka</button>
+      <button
+        onClick={addToCart}
+        style={{
+          width: "100%",
+          marginTop: 10,
+          padding: 12,
+          borderRadius: 8,
+          background: "#22c55e",
+          color: "#fff",
+          border: "none"
+        }}
+      >
+        ➕ Dodaj do koszyka
+      </button>
 
-      {message && <div style={{marginTop:8, padding:8, background:messageType==="error"?"#fecaca":"#bbf7d0", borderRadius:6, textAlign:"center"}}>{message}</div>}
+      {message && (
+        <div
+          style={{
+            marginTop: 8,
+            padding: 8,
+            background: messageType === "error" ? "#fecaca" : "#bbf7d0",
+            borderRadius: 6,
+            textAlign: "center"
+          }}
+        >
+          {message}
+        </div>
+      )}
+
+    
+
 
       <h3>Koszyk</h3>
       {cart.map((i,idx)=><div key={idx}>{i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł <button onClick={()=>removeItem(idx)}>❌</button></div>)}
