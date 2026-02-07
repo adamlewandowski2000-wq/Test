@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
@@ -305,7 +303,7 @@ export default function MiniSklepLiquidow() {
         }}>{v}mg</div>
       })}
 
-      <h3>Ilość (ml)</h3>
+<h3>Ilość (ml)</h3>
 
 <div style={{ display:"flex", alignItems:"center", gap:12 }}>
   <input
@@ -322,8 +320,15 @@ export default function MiniSklepLiquidow() {
     }}
   />
 
-  <span style={{ fontSize:12, fontWeight:600 }}>
-    Przy zakupie 60ml jednego smaku cena jest bardziej korzystna
+  <span style={{
+    fontSize:12,
+    fontWeight:700,
+    color:"#065f46",
+    background:"#d1fae5",
+    padding:"2px 6px",
+    borderRadius:6
+  }}>
+    🌟 Przy zakupie 60ml jednego smaku cena jest bardziej korzystna!
   </span>
 </div>
 
