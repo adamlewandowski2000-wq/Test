@@ -3,7 +3,7 @@ Re
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "TU_WKLEJ_NOWY_URL_Z_GAS"; // nowy URL WebApp
+const SHEET_API = "https://script.google.com/macros/s/AKfycbwavSH_MlbG9UdLs-Bc6KNUFknfqm9yWJAGBHZEdQymiXFIgxhUX5aM_NJ0TKcpc3c/exec"; // nowy URL WebApp
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
