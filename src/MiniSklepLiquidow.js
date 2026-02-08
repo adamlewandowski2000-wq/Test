@@ -311,28 +311,21 @@ export default function MiniSklepLiquidow() {
     step={10}
     min={10}
     value={ml}
-    onChange={e => setMl(e.target.value)}
-    style={{
-      width:"30%",
-      padding:"4px 6px",
-      fontSize:18,
-      WebkitAppearance:"none"
-    }}
+    onChange={e=>setMl(e.target.value)}
+    style={{ width:"30%", padding:"4px 6px", fontSize:18, WebkitAppearance:"none" }}
   />
 
-  {Number(ml) === 60 && (
-    <span style={{
-      fontSize:12,
-      fontWeight:700,
-      color:"#b91c1c",          // czerwony tekst
-      background:"#fef08a",      // żółte tło
-      padding:"2px 6px",
-      borderRadius:6,
-      animation: "pulse 1s infinite"
-    }}>
-      🌟 Przy zakupie 60ml jednego smaku cena jest bardziej korzystna!
-    </span>
-  )}
+  <span style={{
+    fontSize:12,
+    fontWeight:700,
+    color:"#b91c1c",
+    background:"#fef08a",
+    padding:"2px 6px",
+    borderRadius:6,
+    animation: "pulse 1s infinite"
+  }}>
+    🌟 Przy zakupie 60ml jednego smaku cena jest bardziej korzystna!
+  </span>
 </div>
 
 
@@ -349,16 +342,7 @@ export default function MiniSklepLiquidow() {
         {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
       </button>
 
-        {/* Dodaj na końcu pliku (w tym samym komponencie) style animacji */}
-<style>
-{`
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-`}
-</style>
+
     </div>
   );
 }
