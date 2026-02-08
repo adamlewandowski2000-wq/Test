@@ -322,6 +322,7 @@ export default function MiniSklepLiquidow() {
     background:"#fef08a",
     padding:"2px 6px",
     borderRadius:6,
+    display:"inline-block",
     animation: "pulse 1s infinite"
   }}>
     🌟 Przy zakupie 60ml jednego smaku cena jest bardziej korzystna!
@@ -342,7 +343,14 @@ export default function MiniSklepLiquidow() {
         {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
       </button>
 
-
+{/* na końcu komponentu, w JSX, dodaj globalnie style */}
+<style>{`
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+`}</style>
     </div>
   );
 }
