@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
-const SHEET_API = "https://script.google.com/macros/s/AKfycbwU4c-J7l6Bq6lqMDbG0ZXU_rvbffDlGUoKauCKsAKRTrf6GVWX3aOYQKwGKtYUEFcw/exec";
+const SHEET_API = "https://script.google.com/macros/s/AKfycbxejSySdHSBbf7N9gkmYqCsq2FJp90FuAjf4HyMag3iIt-NxmVn6ZunZGbBS8MUNerm/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
