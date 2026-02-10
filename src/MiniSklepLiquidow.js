@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbxh8VCZqfip08AFFW85e8_cl8cgPjnDY-emUF8xaIM_1fs4rK_8K7R-dvE0CIdTYkm1gg/exec";
+  "https://script.google.com/macros/s/AKfycbzcLD99FKuvrM1AbyhoCKFt7KOtX0HUJjy4sbh9crwBZTZ7O9NiG29n0aA9swuQNTEg5A/exec";
+const [inventoryVersion, setInventoryVersion] = useState(null);
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -32,17 +33,38 @@ export default function MiniSklepLiquidow() {
   };
 
   // ================= FETCH INVENTORY =================
-  useEffect(() => {
-    const fetchInventory = () => {
-      fetch(SHEET_API)
-        .then((r) => r.json())
-        .then((d) => setServerInventory(d))
-        .catch(console.error);
-    };
-    fetchInventory();
-    const interval = setInterval(fetchInventory, 5000);
-    return () => clearInterval(interval);
-  }, []);
+ useEffect(() => {
+
+  const fetchInventory = async () => {
+
+    try {
+
+      const url = inventoryVersion
+        ? `${SHEET_API}?version=${inventoryVersion}`
+        : SHEET_API;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.unchanged) return;
+
+      if (data.inventory) {
+        setServerInventory(data.inventory);
+        setInventoryVersion(data.version);
+      }
+
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  fetchInventory();
+
+  const interval = setInterval(fetchInventory, 5000);
+  return () => clearInterval(interval);
+
+}, [inventoryVersion]);
+
 
   // ================= SAVE localStorage =================
   useEffect(() => localStorage.setItem("miniSklepName", name), [name]);
