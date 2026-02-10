@@ -1,14 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbzcLD99FKuvrM1AbyhoCKFt7KOtX0HUJjy4sbh9crwBZTZ7O9NiG29n0aA9swuQNTEg5A/exec";
-
+  "https://script.google.com/macros/s/AKfycbwMFplNZZvUROcFDLreSIOK1JPhe3l8rPOR-MdG2l1BCV2Dc4PNIwbNwXbp3t_LA1ViGA/exec";
 
 export default function MiniSklepLiquidow() {
-  const [serverInventory, setServerInventory] = useState({});
+  // ================== STATE ==================
+  const [serverInventory, setServerInventory] = useState(() => {
+    const inv = localStorage.getItem("miniSklepInventory");
+    return inv ? JSON.parse(inv) : {};
+  });
+  const [inventoryVersion, setInventoryVersion] = useState(() => {
+    return localStorage.getItem("miniSklepInventoryVersion") || null;
+  });
   const [selectedFlavor, setSelectedFlavor] = useState(null);
-const [inventoryVersion, setInventoryVersion] = useState(null);
+
   const [name, setName] = useState(() => localStorage.getItem("miniSklepName") || "");
   const [ml, setMl] = useState(() => localStorage.getItem("miniSklepMl") || "");
   const [strength, setStrength] = useState(() => {
@@ -33,38 +39,27 @@ const [inventoryVersion, setInventoryVersion] = useState(null);
   };
 
   // ================= FETCH INVENTORY =================
- useEffect(() => {
-
-  const fetchInventory = async () => {
-
-    try {
-
-      const url = inventoryVersion
-        ? `${SHEET_API}?version=${inventoryVersion}`
-        : SHEET_API;
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (data.unchanged) return;
-
-      if (data.inventory) {
-        setServerInventory(data.inventory);
-        setInventoryVersion(data.version);
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const url = inventoryVersion ? `${SHEET_API}?version=${inventoryVersion}` : SHEET_API;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.unchanged && data.inventory) {
+          setServerInventory(data.inventory);
+          setInventoryVersion(data.version);
+          localStorage.setItem("miniSklepInventory", JSON.stringify(data.inventory));
+          localStorage.setItem("miniSklepInventoryVersion", data.version);
+        }
+      } catch (e) {
+        console.error(e);
       }
+    };
 
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  fetchInventory();
-
-  const interval = setInterval(fetchInventory, 5000);
-  return () => clearInterval(interval);
-
-}, [inventoryVersion]);
-
+    fetchInventory(); // fetch w tle
+    const interval = setInterval(fetchInventory, 5000);
+    return () => clearInterval(interval);
+  }, [inventoryVersion]);
 
   // ================= SAVE localStorage =================
   useEffect(() => localStorage.setItem("miniSklepName", name), [name]);
@@ -92,82 +87,83 @@ const [inventoryVersion, setInventoryVersion] = useState(null);
 
   // ================= PRICE =================
   const calculatePrice = (volume, strength, baseType) => {
-    let price = 0;
-    let p10 = 0,
-      p60 = 0;
+    let price = 0, p10 = 0, p60 = 0;
     if (baseType === "sól") {
-      if ([6, 12, 18].includes(strength)) { p10 = 14.5; p60 = 76; }
-      else { p10 = 15.5; p60 = 82; }
+      if ([6,12,18].includes(strength)){p10=14.5;p60=76;} else {p10=15.5;p60=82;}
     } else {
-      if ([6, 12].includes(strength)) { p10 = 10.5; p60 = 52; }
-      else if (strength === 18) { p10 = 11.5; p60 = 58; }
-      else if (strength === 24) { p10 = 12.5; p60 = 64; }
+      if ([6,12].includes(strength)) {p10=10.5;p60=52;}
+      else if (strength===18) {p10=11.5;p60=58;}
+      else if (strength===24) {p10=12.5;p60=64;}
     }
     let remainder = volume;
-    const num60 = Math.floor(remainder / 60);
-    price += num60 * p60;
+    const num60 = Math.floor(remainder/60);
+    price += num60*p60;
     remainder %= 60;
-    const num30 = Math.floor(remainder / 30);
-    if (num30 > 0) {
+    const num30 = Math.floor(remainder/30);
+    if (num30>0){
       const price30 = (() => {
-        if (baseType === "nikotyna") {
-          if ([6, 12].includes(strength)) return 31;
-          if (strength === 18) return 34;
-          if (strength === 24) return 37;
-        } else {
-          if ([6, 12, 18].includes(strength)) return 43;
-          if ([24, 36].includes(strength)) return 46;
-        }
+        if (baseType==="nikotyna"){ if([6,12].includes(strength)) return 31; if(strength===18) return 34; if(strength===24) return 37; }
+        else{ if([6,12,18].includes(strength)) return 43; if([24,36].includes(strength)) return 46; }
         return 0;
       })();
-      price += num30 * price30;
+      price += num30*price30;
       remainder %= 30;
     }
-    price += (remainder / 10) * p10;
+    price += (remainder/10)*p10;
     return price;
   };
 
   // ================= ADD TO CART =================
   const addToCart = () => {
-    if (!selectedFlavor) return showMessage("❌ Wybierz smak", "error");
-    if (!ml) return showMessage("❌ Podaj ilość", "error");
-    if (ml % 10 !== 0) return showMessage("❌ Tylko co 10ml", "error");
-    if (!strength) return showMessage("❌ Wybierz moc", "error");
-    if (!base) return showMessage("❌ Wybierz bazę", "error");
+    if (!selectedFlavor) return showMessage("❌ Wybierz smak","error");
+    if (!ml) return showMessage("❌ Podaj ilość","error");
+    if (ml % 10 !== 0) return showMessage("❌ Tylko co 10ml","error");
+    if (!strength) return showMessage("❌ Wybierz moc","error");
+    if (!base) return showMessage("❌ Wybierz bazę","error");
     const maxMl = getAvailableMl(selectedFlavor.id);
-    if (ml > maxMl) return showMessage(`❌ Max ${maxMl}ml`, "error");
+    if (ml > maxMl) return showMessage(`❌ Max ${maxMl}ml`,"error");
     const price = calculatePrice(Number(ml), strength, base);
-    setCart([...cart, { flavor: selectedFlavor, ml: Number(ml), strength, base, price }]);
+    setCart([...cart, { flavor:selectedFlavor, ml:Number(ml), strength, base, price }]);
     setMl("");
-    showMessage("✅ Dodano do koszyka", "success");
+    showMessage("✅ Dodano do koszyka","success");
   };
 
-  const removeItem = (idx) => setCart(cart.filter((_, i) => i !== idx));
+  const removeItem = (idx) => setCart(cart.filter((_, i) => i!==idx));
 
   // ================= SEND ORDER =================
   const sendOrder = async () => {
-    if (!name) return showMessage("❌ Podaj imię", "error");
-    if (cart.length === 0) return showMessage("❌ Koszyk pusty", "error");
+    if (!name) return showMessage("❌ Podaj imię","error");
+    if (cart.length===0) return showMessage("❌ Koszyk pusty","error");
     if (isSending) return;
     setIsSending(true);
-    const orderText = cart.map(i => `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`).join("\n");
-    const total = cart.reduce((s, i) => s + i.price, 0);
+
+    const orderText = cart.map(i=>`${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`).join("\n");
+    const total = cart.reduce((s,i)=>s+i.price,0);
     const usedAromas = {};
-    cart.forEach(i => usedAromas[i.flavor.id] = (usedAromas[i.flavor.id] || 0) + i.ml / 10);
-    try {
+    cart.forEach(i=>usedAromas[i.flavor.id]=(usedAromas[i.flavor.id]||0)+i.ml/10);
+
+    try{
       await fetch(SHEET_API, {
-        method: "POST",
-        body: JSON.stringify({ name, orderText, total, usedAromas }),
+        method:"POST",
+        body:JSON.stringify({ name, orderText, total, usedAromas }),
       });
-      showMessage("✅ Zamówienie wysłane!", "success");
-      localStorage.clear();
+
+      showMessage("✅ Zamówienie wysłane!","success");
+
+      // Czyścimy frontend i localStorage
+      localStorage.removeItem("miniSklepCart");
+      localStorage.removeItem("miniSklepName");
+      localStorage.removeItem("miniSklepMl");
+      localStorage.removeItem("miniSklepStrength");
+      localStorage.removeItem("miniSklepBase");
+
       setCart([]); setName(""); setMl(""); setStrength(null); setBase(null); setSelectedFlavor(null);
     } catch {
-      showMessage("❌ Błąd wysyłki", "error");
+      showMessage("❌ Błąd wysyłki","error");
     } finally { setIsSending(false); }
   };
 
-  const total = cart.reduce((s, i) => s + i.price, 0);
+  const total = cart.reduce((s,i)=>s+i.price,0);
 
   // ================= CATEGORY DATA =================
   const categoryColors = {
@@ -179,7 +175,7 @@ const [inventoryVersion, setInventoryVersion] = useState(null);
     "Inne smaki":["#34d399","#bbf7d0"]
   };
 
-  const flavorCategories = {
+const flavorCategories = {
     "Miksy owocowe":[
       {id:1,name:"Czerwone owoce, Czarna porzeczka, Truskawka, Jeżyna, Malina, Jagoda, Efekt chłodu"},
       {id:2,name:"Czerwone owoce, Truskawka, Czarna porzeczka, Efekt lodowaty"},
@@ -247,8 +243,8 @@ const [inventoryVersion, setInventoryVersion] = useState(null);
     ]
   };
 
-  // ================= RENDER =================
-  return (
+
+ return (
     <div style={{ maxWidth:520, margin:"40px auto", padding:15, borderRadius:12, background:`url(${bg}) center/cover`, boxShadow:"0 0 20px rgba(0,0,0,.2)" }}>
       <h2 style={{textAlign:"center"}}>Mini sklep liquidów</h2>
 
