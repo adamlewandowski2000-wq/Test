@@ -3,12 +3,12 @@ import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
   "https://script.google.com/macros/s/AKfycbzcLD99FKuvrM1AbyhoCKFt7KOtX0HUJjy4sbh9crwBZTZ7O9NiG29n0aA9swuQNTEg5A/exec";
-const [inventoryVersion, setInventoryVersion] = useState(null);
+
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
   const [selectedFlavor, setSelectedFlavor] = useState(null);
-
+const [inventoryVersion, setInventoryVersion] = useState(null);
   const [name, setName] = useState(() => localStorage.getItem("miniSklepName") || "");
   const [ml, setMl] = useState(() => localStorage.getItem("miniSklepMl") || "");
   const [strength, setStrength] = useState(() => {
