@@ -30,7 +30,7 @@ export default function MiniSklepLiquidow() {
   const showMessage = (txt, type = "info") => {
     setMessage(txt);
     setMessageType(type);
-    setTimeout(() => setMessage(""), 3000);
+    setTimeout(() => setMessage(""), 4000);
   };
 
   // ================= FETCH INVENTORY =================
@@ -139,7 +139,8 @@ export default function MiniSklepLiquidow() {
         method: "POST",
         body: JSON.stringify({ name, orderText, total, usedAromas }),
       });
-      showMessage("✅ Zamówienie wysłane!", "success");
+showMessage( <> ✅ Zamówienie wysłane!<br /> <strong style={{ color: "red" }}> Po odbiór odezwij się na priv! </strong> </>, "success" );
+      
       localStorage.clear();
       setCart([]); setName(""); setMl(""); setStrength(null); setBase(null); setSelectedFlavor(null);
     } catch {
