@@ -71,17 +71,17 @@ export default function MiniSklepLiquidow() {
   };
 
   // ================= PRICE =================
-  const calculatePrice = (volume, strength, baseType) => {
+ const calculatePrice = (volume, strength, baseType) => {
     let price = 0;
     let p10 = 0,
       p60 = 0;
     if (baseType === "sól") {
-      if ([6, 12, 18].includes(strength)) { p10 = 14.5; p60 = 76; }
-      else { p10 = 15.5; p60 = 82; }
+      if ([6, 12, 18].includes(strength)) { p10 = 15; p60 = 79; }
+      else { p10 = 16; p60 = 85; }
     } else {
-      if ([6, 12].includes(strength)) { p10 = 10.5; p60 = 52; }
-      else if (strength === 18) { p10 = 11.5; p60 = 58; }
-      else if (strength === 24) { p10 = 12.5; p60 = 64; }
+      if ([6, 12].includes(strength)) { p10 = 11; p60 = 55; }
+      else if (strength === 18) { p10 = 12; p60 = 61; }
+      else if (strength === 24) { p10 = 13; p60 = 67; }
     }
     let remainder = volume;
     const num60 = Math.floor(remainder / 60);
@@ -91,12 +91,12 @@ export default function MiniSklepLiquidow() {
     if (num30 > 0) {
       const price30 = (() => {
         if (baseType === "nikotyna") {
-          if ([6, 12].includes(strength)) return 31;
-          if (strength === 18) return 34;
-          if (strength === 24) return 37;
+          if ([6, 12].includes(strength)) return 32.5;
+          if (strength === 18) return 35.5;
+          if (strength === 24) return 38.5;
         } else {
-          if ([6, 12, 18].includes(strength)) return 43;
-          if ([24, 36].includes(strength)) return 46;
+          if ([6, 12, 18].includes(strength)) return 44.5;
+          if ([24, 36].includes(strength)) return 47.5;
         }
         return 0;
       })();
