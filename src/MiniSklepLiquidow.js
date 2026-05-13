@@ -976,42 +976,7 @@ setShowReferralPopup(true);
             <div
               style={{
                 background: "#fef9c3",
-                border: "1px solid #fde047",
-                borderRadius: 12,
-                padding: 12,
-                marginBottom: 18,
-                fontSize: 14,
-                lineHeight: 1.5,
-                color: "#854d0e",
-                fontWeight: "bold",
-              }}
-            >
-              📦 Możliwa wysyłka
-              do Paczkomatu
-              w cenie 10zł
-            </div>
-
-            <button
-              onClick={() =>
-                setShowReferralPopup(false)
-              }
-              style={{
-                width: "100%",
-                padding: 12,
-                border: "none",
-                borderRadius: 12,
-                background: "#16a34a",
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: 16,
-                cursor: "pointer",
-              }}
-            >
-              🔥 Rozumiem
-            </button>
-          </div>
-        </div>
-      )}
+  
 
       <style>{`
         @keyframes pulse {
