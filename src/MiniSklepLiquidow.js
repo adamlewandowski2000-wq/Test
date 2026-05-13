@@ -389,8 +389,364 @@ setShowReferralPopup(true);
       }}
     >
 
-      {/* TWÓJ CAŁY JSX */}
+<h2 style={{ textAlign: "center" }}>
+  Mini sklep liquidów
+</h2>
 
+<input
+  placeholder="Imię i Nazwisko"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  style={{
+    width: "50%",
+    padding: "4px 6px",
+    marginBottom: 10,
+    fontSize: 18,
+  }}
+/>
+
+<h3>Smaki</h3>
+
+{Object.entries(flavorCategories).map(
+  ([cat, flavors]) => {
+    const [main, light] =
+      categoryColors[cat];
+
+    return (
+      <details
+        key={cat}
+        style={{
+          marginBottom: 10,
+          borderRadius: 8,
+          padding: 5,
+          background: main,
+        }}
+      >
+        <summary
+          style={{
+            fontWeight: "bold",
+            padding: 6,
+          }}
+        >
+          {cat}
+        </summary>
+
+        <div
+          style={{
+            padding: 6,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
+          {flavors.map((f) => {
+            const stock =
+              getAvailableMl(f.id);
+
+            const stockColor =
+              stock === 0
+                ? "red"
+                : stock < 120
+                ? "#facc15"
+                : "#22c55e";
+
+            return (
+              <label
+                key={f.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: 13,
+                  background: `linear-gradient(90deg, ${light}, #fff)`,
+                  borderRadius: 6,
+                  padding: "4px 6px",
+                  cursor:
+                    stock === 0
+                      ? "not-allowed"
+                      : "pointer",
+                  opacity:
+                    stock === 0 ? 0.6 : 1,
+                  transition: ".2s",
+                }}
+                onClick={() => {
+                  if (stock === 0) {
+                    showMessage(
+                      "❌ Brak na stanie",
+                      "error"
+                    );
+                  } else {
+                    setSelectedFlavor(f);
+                  }
+                }}
+              >
+                <span
+                  style={{
+                    width: 16,
+                    height: 16,
+                    border: "1px solid #000",
+                    display: "inline-block",
+                    marginRight: 6,
+                    textAlign: "center",
+                    lineHeight: "16px",
+                    background:
+                      selectedFlavor?.id ===
+                      f.id
+                        ? "green"
+                        : "#fff",
+                    color: "#fff",
+                  }}
+                >
+                  {selectedFlavor?.id ===
+                  f.id
+                    ? "✔"
+                    : ""}
+                </span>
+
+                <div style={{ flex: 1 }}>
+                  {f.id}. {f.name}
+
+                  {[1, 14, 27, 36].includes(
+                    f.id
+                  ) && (
+                    <span className="bestseller">
+                      🔥 BESTSELLER
+                    </span>
+                  )}
+
+                  <div
+                    style={{
+                      marginTop: 2,
+                      fontWeight: "bold",
+                      color: stockColor,
+                    }}
+                  >
+                    na stanie: {stock}ml
+                  </div>
+
+                  {stock <= 60 &&
+                    stock > 0 && (
+                      <div className="lowStock">
+                        ⚠️ Końcówka smaku
+                      </div>
+                    )}
+                </div>
+              </label>
+            );
+          })}
+        </div>
+      </details>
+    );
+  }
+)}
+
+<h3>Baza</h3>
+
+{["Nikotyna", "Sól"].map((v) => {
+  const disabled =
+    v === "Nikotyna" &&
+    strength === 36;
+
+  return (
+    <div
+      key={v}
+      onClick={() =>
+        !disabled &&
+        setBase(v.toLowerCase())
+      }
+      style={{
+        display: "inline-block",
+        width: 70,
+        height: 30,
+        marginRight: 6,
+        border: "1px solid #000",
+        borderRadius: 4,
+        textAlign: "center",
+        lineHeight: "30px",
+        cursor: disabled
+          ? "not-allowed"
+          : "pointer",
+        background:
+          base?.toLowerCase() ===
+          v.toLowerCase()
+            ? "green"
+            : "#eee",
+        color:
+          base?.toLowerCase() ===
+          v.toLowerCase()
+            ? "#fff"
+            : "#000",
+      }}
+    >
+      {v}
+    </div>
+  );
+})}
+
+<h3>Moc</h3>
+
+{[6, 12, 18, 24, 36].map((v) => {
+  const disabled =
+    base === "nikotyna" && v === 36;
+
+  return (
+    <div
+      key={v}
+      onClick={() =>
+        !disabled && setStrength(v)
+      }
+      style={{
+        display: "inline-block",
+        width: 40,
+        height: 30,
+        marginRight: 6,
+        border: "1px solid #000",
+        borderRadius: 4,
+        textAlign: "center",
+        lineHeight: "30px",
+        cursor: disabled
+          ? "not-allowed"
+          : "pointer",
+        background:
+          strength === v
+            ? "green"
+            : "#eee",
+        color:
+          strength === v
+            ? "#fff"
+            : "#000",
+      }}
+    >
+      {v}mg
+    </div>
+  );
+})}
+
+<h3>Ilość (ml)</h3>
+
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  }}
+>
+  <input
+    type="number"
+    step={10}
+    min={10}
+    value={ml}
+    onChange={(e) =>
+      setMl(e.target.value)
+    }
+    style={{
+      width: "30%",
+      padding: "4px 6px",
+      fontSize: 18,
+    }}
+  />
+
+  <span
+    style={{
+      fontSize: 12,
+      fontWeight: 700,
+      color: "#b91c1c",
+      background: "#fef08a",
+      padding: "2px 6px",
+      borderRadius: 6,
+      animation: "pulse 1s infinite",
+    }}
+  >
+    🌟 Kupując 60ml oszczędzasz!
+  </span>
+</div>
+
+{ml > 0 && ml < 60 && (
+  <div className="progressBox">
+    🔥 Do najlepszej ceny brakuje Ci tylko{" "}
+    {60 - Number(ml)}ml
+  </div>
+)}
+
+<button
+  onClick={addToCart}
+  className={`addBtn ${
+    Number(ml) === 60
+      ? "bestPrice"
+      : ""
+  }`}
+  style={{
+    width: "100%",
+    marginTop: 10,
+    padding: 12,
+    borderRadius: 8,
+    background: "#22c55e",
+    color: "#fff",
+    border: "none",
+    fontSize: 16,
+  }}
+>
+  {Number(ml) === 60
+    ? "🔥 Najlepsza opcja — dodaj 60ml"
+    : "➕ Dodaj do koszyka"}
+</button>
+
+{message && (
+  <div
+    className={
+      messageType === "success"
+        ? "successPulse"
+        : ""
+    }
+    style={{
+      marginTop: 8,
+      padding: 8,
+      background:
+        messageType === "error"
+          ? "#fecaca"
+          : "#bbf7d0",
+      borderRadius: 6,
+      textAlign: "center",
+      fontWeight: "bold",
+    }}
+  >
+    {message}
+  </div>
+)}
+
+<h3>Koszyk</h3>
+
+{cart.map((i, idx) => (
+  <div
+    key={idx}
+    style={{ marginBottom: 4 }}
+  >
+    {i.flavor.id}/{i.ml}ml/
+    {i.strength}mg/{i.base} —{" "}
+    {i.price.toFixed(2)}zł
+
+    <button
+      onClick={() => removeItem(idx)}
+      style={{ marginLeft: 6 }}
+    >
+      ❌
+    </button>
+  </div>
+))}
+
+<h3
+  style={{
+    marginTop: 14,
+    textAlign: "center",
+    fontSize: 24,
+  }}
+>
+  💰 Suma: {total.toFixed(2)} zł
+</h3>
+
+<div className="cartFloating">
+  🛒 Koszyk: {cart.length} produktów —{" "}
+  {total.toFixed(2)} zł
+</div>
       <button
         disabled={isSending}
         onClick={sendOrder}
