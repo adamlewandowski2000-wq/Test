@@ -510,43 +510,35 @@ const sendOrder = async () => {
                     : ""}
                 </span>
 
-                <div style={{ flex: 1 }}>
-                  {f.id}. {f.name}
+    <>
+  {f.id}. {f.name}
 
-                  {[1, 14, 27, 36].includes(
-                    f.id
-                  ) && (
-                    <span className="bestseller">
-                      🔥 BESTSELLER
-                    </span>
-                  )}
+  {[1, 14, 27, 36].includes(f.id) && (
+    <span className="bestseller">
+      🔥 BESTSELLER
+    </span>
+  )}
 
-                 <div
-  style={{
-    marginTop: 2,
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    flexWrap: "wrap",
-    fontSize: 12,
-  }}
->
   <span
     style={{
+      marginLeft: 6,
       fontWeight: "bold",
       color: stockColor,
+      fontSize: 12,
     }}
   >
-    na stanie: {stock}ml
+    (na stanie: {stock}ml)
   </span>
 
   {stock <= 60 && stock > 0 && (
-    <span className="lowStock">
-      ⚠️ Końcówka smaku
+    <span
+      className="lowStock"
+      style={{ marginLeft: 6 }}
+    >
+      ⚠️ Końcówka
     </span>
   )}
-</div>
-                </div>
+</>
               </label>
             );
           })}
