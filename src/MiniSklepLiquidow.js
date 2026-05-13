@@ -7,7 +7,8 @@ const SHEET_API =
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] =
     useState({});
-
+const [lastOrderTotal, setLastOrderTotal] =
+  useState(0);
   const [selectedFlavor, setSelectedFlavor] =
     useState(null);
 
