@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
@@ -33,8 +35,10 @@ export default function MiniSklepLiquidow() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
   const [isSending, setIsSending] = useState(false);
+
+  // ✅ NOWE
   const [showReferralPopup, setShowReferralPopup] =
-  useState(false);
+    useState(false);
 
   // ================= HELPERS =================
 
@@ -220,7 +224,7 @@ export default function MiniSklepLiquidow() {
 
     showMessage("✅ Dodano do koszyka", "success");
   };
-setShowReferralPopup(true);
+
   const removeItem = (idx) =>
     setCart(cart.filter((_, i) => i !== idx));
 
@@ -272,6 +276,9 @@ setShowReferralPopup(true);
         "success"
       );
 
+      // ✅ NOWE
+      setShowReferralPopup(true);
+
       localStorage.clear();
 
       setCart([]);
@@ -292,7 +299,17 @@ setShowReferralPopup(true);
     0
   );
 
- const categoryColors = {
+  // ================= CATEGORY =================
+
+  const categoryColors = {
+    // TWOJE KATEGORIE
+  };
+
+  const flavorCategories = {
+    // TWOJE SMAKI
+  };
+
+  const categoryColors = {
     "Miksy owocowe":["#f87171","#fecaca"],
     "Owoce leśne":["#a78bfa","#e9d5ff"],
     "Tropikalne/Egzotyczne":["#facc15","#fef08a"],
@@ -369,551 +386,222 @@ setShowReferralPopup(true);
       {id:54,name:"Czerwone jagody, Kaktus, Cytryna, Efekt chłodu"}
     ]
   };
-  return (
-    <div
-      style={{
-        maxWidth: 520,
-        margin: "40px auto",
-        padding: 15,
-        borderRadius: 12,
-        background: `url(${bg}) center/cover`,
-        boxShadow: "0 0 20px rgba(0,0,0,.2)",
-      }}
-    >
-      <h2 style={{ textAlign: "center" }}>
-        Mini sklep liquidów
-      </h2>
 
-      <input
-        placeholder="Imię i Nazwisko"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{
-          width: "50%",
-          padding: "4px 6px",
-          marginBottom: 10,
-          fontSize: 18,
-        }}
-      />
+  // ================= RENDER =================
+  return (
+    <div style={{ maxWidth:520, margin:"40px auto", padding:15, borderRadius:12, background:`url(${bg}) center/cover`, boxShadow:"0 0 20px rgba(0,0,0,.2)" }}>
+      <h2 style={{textAlign:"center"}}>Mini sklep liquidów</h2>
+
+      <input placeholder="Imię i Nazwisko" value={name} onChange={e=>setName(e.target.value)}
+        style={{width:"50%", padding:"4px 6px", marginBottom:10, fontSize:18}} />
 
       <h3>Smaki</h3>
+      {Object.entries(flavorCategories).map(([cat, flavors])=>{
+        const [main, light] = categoryColors[cat];
+        return <details key={cat} style={{marginBottom:10, borderRadius:8, padding:5, background:main}}>
+          <summary style={{fontWeight:"bold", padding:6}}>{cat}</summary>
+          <div style={{padding:6, display:"flex", flexDirection:"column", gap:4}}>
+            {flavors.map(f=>{
+              const stock = getAvailableMl(f.id);
+              const stockColor = stock===0?"red":stock<120?"#facc15":"#22c55e";
 
-      {Object.entries(flavorCategories).map(
-        ([cat, flavors]) => {
-          const [main, light] =
-            categoryColors[cat];
-
-          return (
-            <details
-              key={cat}
-              style={{
-                marginBottom: 10,
-                borderRadius: 8,
-                padding: 5,
-                background: main,
+              return <label key={f.id} style={{
+                display:"flex", alignItems:"center", fontSize:13, 
+                background:`linear-gradient(90deg, ${light}, #fff)`, borderRadius:6, padding:"4px 6px",
+                cursor:stock===0?"not-allowed":"pointer", opacity:stock===0?0.6:1
               }}
-            >
-              <summary
-                style={{
-                  fontWeight: "bold",
-                  padding: 6,
-                }}
-              >
-                {cat}
-              </summary>
-
-              <div
-                style={{
-                  padding: 6,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
-                }}
-              >
-                {flavors.map((f) => {
-                  const stock =
-                    getAvailableMl(f.id);
-
-                  const stockColor =
-                    stock === 0
-                      ? "red"
-                      : stock < 120
-                      ? "#facc15"
-                      : "#22c55e";
-
-                  return (
-                    <label
-                      key={f.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        fontSize: 13,
-                        background: `linear-gradient(90deg, ${light}, #fff)`,
-                        borderRadius: 6,
-                        padding: "4px 6px",
-                        cursor:
-                          stock === 0
-                            ? "not-allowed"
-                            : "pointer",
-                        opacity:
-                          stock === 0 ? 0.6 : 1,
-                        transition: ".2s",
-                      }}
-                      onClick={() => {
-                        if (stock === 0) {
-                          showMessage(
-                            "❌ Brak na stanie",
-                            "error"
-                          );
-                        } else {
-                          setSelectedFlavor(f);
-                        }
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 16,
-                          height: 16,
-                          border: "1px solid #000",
-                          display: "inline-block",
-                          marginRight: 6,
-                          textAlign: "center",
-                          lineHeight: "16px",
-                          background:
-                            selectedFlavor?.id ===
-                            f.id
-                              ? "green"
-                              : "#fff",
-                          color: "#fff",
-                        }}
-                      >
-                        {selectedFlavor?.id ===
-                        f.id
-                          ? "✔"
-                          : ""}
-                      </span>
-
-                      <div style={{ flex: 1 }}>
-                        {f.id}. {f.name}
-
-                        {[1, 14, 27, 36].includes(
-                          f.id
-                        ) && (
-                          <span className="bestseller">
-                            🔥 BESTSELLER
-                          </span>
-                        )}
-
-                        <div
-                          style={{
-                            marginTop: 2,
-                            fontWeight: "bold",
-                            color: stockColor,
-                          }}
-                        >
-                          na stanie: {stock}ml
-                        </div>
-
-                        {stock <= 60 &&
-                          stock > 0 && (
-                            <div className="lowStock">
-                              ⚠️ Końcówka smaku
-                            </div>
-                          )}
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-            </details>
-          );
-        }
-      )}
+              onClick={()=>{
+                if(stock===0) showMessage("❌ Brak na stanie", "error");
+                else setSelectedFlavor(f);
+              }}>
+                <span style={{
+                  width:16, height:16, border:"1px solid #000", display:"inline-block",
+                  marginRight:6, textAlign:"center", lineHeight:"16px",
+                  background:selectedFlavor?.id===f.id?"green":"#fff", color:"#fff"
+                }}>{selectedFlavor?.id===f.id?"✔":""}</span>
+                {f.id}. {f.name}
+                <span style={{marginLeft:6, fontWeight:"bold", color:stockColor}}>
+                  (na stanie: {stock}ml)
+                </span>
+              </label>
+            })}
+          </div>
+        </details>
+      })}
 
       <h3>Baza</h3>
-
-      {["Nikotyna", "Sól"].map((v) => {
-        const disabled =
-          v === "Nikotyna" &&
-          strength === 36;
-
-        return (
-          <div
-            key={v}
-            onClick={() =>
-              !disabled &&
-              setBase(v.toLowerCase())
-            }
-            style={{
-              display: "inline-block",
-              width: 70,
-              height: 30,
-              marginRight: 6,
-              border: "1px solid #000",
-              borderRadius: 4,
-              textAlign: "center",
-              lineHeight: "30px",
-              cursor: disabled
-                ? "not-allowed"
-                : "pointer",
-              background:
-                base?.toLowerCase() ===
-                v.toLowerCase()
-                  ? "green"
-                  : "#eee",
-              color:
-                base?.toLowerCase() ===
-                v.toLowerCase()
-                  ? "#fff"
-                  : "#000",
-            }}
-          >
+      {["Nikotyna","Sól"].map(v=>{
+        const disabled = v==="Nikotyna" && strength===36;
+        return <div key={v} onClick={()=>!disabled && setBase(v.toLowerCase())} 
+          style={{
+            display:"inline-block", width:70, height:30, marginRight:6,
+            border:"1px solid #000", borderRadius:4, textAlign:"center",
+            lineHeight:"30px", cursor:disabled?"not-allowed":"pointer",
+            background:base?.toLowerCase()===v.toLowerCase()?"green":"#eee",
+            color:base?.toLowerCase()===v.toLowerCase()?"#fff":"#000",
+            opacity:disabled?.4:1
+          }}>
             {v}
-          </div>
-        );
+        </div>
       })}
 
       <h3>Moc</h3>
-
-      {[6, 12, 18, 24, 36].map((v) => {
-        const disabled =
-          base === "nikotyna" && v === 36;
-
-        return (
-          <div
-            key={v}
-            onClick={() =>
-              !disabled && setStrength(v)
-            }
-            style={{
-              display: "inline-block",
-              width: 40,
-              height: 30,
-              marginRight: 6,
-              border: "1px solid #000",
-              borderRadius: 4,
-              textAlign: "center",
-              lineHeight: "30px",
-              cursor: disabled
-                ? "not-allowed"
-                : "pointer",
-              background:
-                strength === v
-                  ? "green"
-                  : "#eee",
-              color:
-                strength === v
-                  ? "#fff"
-                  : "#000",
-            }}
-          >
-            {v}mg
-          </div>
-        );
+      {[6,12,18,24,36].map(v=>{
+        const disabled = base==="nikotyna" && v===36;
+        return <div key={v} onClick={()=>!disabled && setStrength(v)} style={{
+          display:"inline-block", width:40, height:30, marginRight:6, 
+          border:"1px solid #000", borderRadius:4, textAlign:"center",
+          lineHeight:"30px", cursor:disabled?"not-allowed":"pointer",
+          background:strength===v?"green":"#eee", color:strength===v?"#fff":"#000",
+          opacity:disabled?.4:1
+        }}>{v}mg</div>
       })}
 
       <h3>Ilość (ml)</h3>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
+      <div style={{ display:"flex", alignItems:"center", gap:12 }}>
         <input
           type="number"
           step={10}
           min={10}
           value={ml}
-          onChange={(e) =>
-            setMl(e.target.value)
-          }
-          style={{
-            width: "30%",
-            padding: "4px 6px",
-            fontSize: 18,
-          }}
+          onChange={e=>setMl(e.target.value)}
+          style={{ width:"30%", padding:"4px 6px", fontSize:18, WebkitAppearance:"none" }}
         />
-
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: "#b91c1c",
-            background: "#fef08a",
-            padding: "2px 6px",
-            borderRadius: 6,
-            animation: "pulse 1s infinite",
-          }}
-        >
-          🌟 Kupując 60ml oszczędzasz!
+        <span style={{
+          fontSize:12,
+          fontWeight:700,
+          color:"#b91c1c",
+          background:"#fef08a",
+          padding:"2px 6px",
+          borderRadius:6,
+          display:"inline-block",
+          animation: "pulse 1s infinite"
+        }}>
+          🌟 Przy zakupie 60ml jednego smaku cena jest bardziej korzystna!
         </span>
       </div>
 
-      {ml > 0 && ml < 60 && (
-        <div className="progressBox">
-          🔥 Do najlepszej ceny brakuje Ci tylko{" "}
-          {60 - Number(ml)}ml
-        </div>
-      )}
-
-      <button
-        onClick={addToCart}
-        className={`addBtn ${
-          Number(ml) === 60
-            ? "bestPrice"
-            : ""
-        }`}
-        style={{
-          width: "100%",
-          marginTop: 10,
-          padding: 12,
-          borderRadius: 8,
-          background: "#22c55e",
-          color: "#fff",
-          border: "none",
-          fontSize: 16,
-        }}
-      >
-        {Number(ml) === 60
-          ? "🔥 Najlepsza opcja — dodaj 60ml"
-          : "➕ Dodaj do koszyka"}
+      <button onClick={addToCart} style={{width:"100%", marginTop:10, padding:12, borderRadius:8, background:"#22c55e", color:"#fff", border:"none"}}>
+        ➕ Dodaj do koszyka
       </button>
 
-      {message && (
-        <div
-          className={
-            messageType === "success"
-              ? "successPulse"
-              : ""
-          }
-          style={{
-            marginTop: 8,
-            padding: 8,
-            background:
-              messageType === "error"
-                ? "#fecaca"
-                : "#bbf7d0",
-            borderRadius: 6,
-            textAlign: "center",
-            fontWeight: "bold",
-          }}
-        >
-          {message}
-        </div>
-      )}
+      {message && <div style={{marginTop:8, padding:8, background:messageType==="error"?"#fecaca":"#bbf7d0", borderRadius:6, textAlign:"center"}}>
+        {message}
+      </div>}
 
       <h3>Koszyk</h3>
-
-      {cart.map((i, idx) => (
-        <div
-          key={idx}
-          style={{ marginBottom: 4 }}
-        >
-          {i.flavor.id}/{i.ml}ml/
-          {i.strength}mg/{i.base} —{" "}
-          {i.price.toFixed(2)}zł
-
-          <button
-            onClick={() => removeItem(idx)}
-            style={{ marginLeft: 6 }}
-          >
-            ❌
-          </button>
+      {cart.map((i,idx)=>
+        <div key={idx} style={{marginBottom:4}}>
+          {i.flavor.id}/{i.ml}ml/{i.strength}mg/{i.base} — {i.price.toFixed(2)}zł 
+          <button onClick={()=>removeItem(idx)} style={{marginLeft:6}}>❌</button>
         </div>
-      ))}
+      )}
 
-      <h3
-        style={{
-          marginTop: 14,
-          textAlign: "center",
-          fontSize: 24,
-        }}
-      >
-        💰 Suma: {total.toFixed(2)} zł
-      </h3>
+      <h3>Suma: {total.toFixed(2)} zł</h3>
 
-      <div className="cartFloating">
-        🛒 Koszyk: {cart.length} produktów —{" "}
-        {total.toFixed(2)} zł
-      </div>
-
-      <button
-        disabled={isSending}
-        onClick={sendOrder}
-        className="addBtn"
-        style={{
-          width: "100%",
-          marginTop: 15,
-          padding: 12,
-          background: isSending
-            ? "#9ca3af"
-            : "#16a34a",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          fontSize: 18,
-          fontWeight: "bold",
-        }}
-      >
-        {isSending
-          ? "⏳ Wysyłanie..."
-          : "📤 Wyślij zamówienie"}
+      <button disabled={isSending} onClick={sendOrder} style={{width:"100%", marginTop:15, padding:12, background:isSending?"#9ca3af":"#16a34a", color:"#fff", border:"none", borderRadius:8}}>
+        {isSending?"Wysyłanie...":"📤 Wyślij zamówienie"}
       </button>
 
+      {/* Globalne style */}
       <style>{`
         @keyframes pulse {
           0% { transform: scale(1); }
           50% { transform: scale(1.05); }
           100% { transform: scale(1); }
         }
-
-        @keyframes glowGreen {
-          0% { box-shadow: 0 0 0px #22c55e; }
-          50% { box-shadow: 0 0 20px #22c55e; }
-          100% { box-shadow: 0 0 0px #22c55e; }
-        }
-
-        .addBtn {
-          transition: all .2s ease;
-          font-weight: bold;
-        }
-
-        .addBtn:hover {
-          transform: scale(1.03);
-        }
-
-        .addBtn:active {
-          transform: scale(.96);
-        }
-
-        .bestPrice {
-          animation: glowGreen 1.5s infinite;
-        }
-
-        .lowStock {
-          animation: pulse 1s infinite;
-          color: #dc2626;
-          font-weight: bold;
-          font-size: 12px;
-        }
-
-        .bestseller {
-          background: #ef4444;
-          color: white;
-          padding: 2px 6px;
-          border-radius: 6px;
-          font-size: 10px;
-          margin-left: 6px;
-          font-weight: bold;
-        }
-
-        .progressBox {
-          margin-top: 8px;
-          background: #fef08a;
-          color: #92400e;
-          padding: 8px;
-          border-radius: 8px;
-          font-size: 13px;
-          font-weight: bold;
-          text-align: center;
-          animation: pulse 1.2s infinite;
-        }
-
-        .cartFloating {
-          position: sticky;
-          bottom: 10px;
-          background: #111;
-          color: #fff;
-          padding: 10px 14px;
-          border-radius: 12px;
-          text-align: center;
-          font-weight: bold;
-          margin-top: 10px;
-          box-shadow: 0 0 20px rgba(0,0,0,.3);
-          z-index: 999;
-        }
-
-        .successPulse {
-          animation: pulse 1s infinite;
-        }
       `}</style>
-{showReferralPopup && (
-  <div style={{
-    position:"fixed",
-    inset:0,
-    background:"rgba(0,0,0,.7)",
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"center",
-    zIndex:9999,
-    padding:20
-  }}>
-
-    <div style={{
-      background:"#fff",
-      padding:25,
-      borderRadius:16,
-      width:340,
-      textAlign:"center",
-      boxShadow:"0 0 25px rgba(0,0,0,.3)"
-    }}>
-
-      <h2 style={{
-        marginTop:0,
-        color:"#16a34a"
-      }}>
-        🎁 Program poleceń
-      </h2>
-
-      <p style={{
-        lineHeight:1.6,
-        fontSize:15
-      }}>
-        Polecaj znajomych i zdobywaj
-        <strong> +10ml gratis </strong>
-        za każdą poleconą osobę 👀
-      </p>
-
-      <div style={{
-        background:"#eff6ff",
-        border:"1px solid #93c5fd",
-        borderRadius:12,
-        padding:12,
-        marginTop:15,
-        marginBottom:18,
-        fontSize:14,
-        lineHeight:1.5
-      }}>
-        🔥 Polecona osoba również
-        otrzyma bonus do pierwszego
-        zamówienia.
-      </div>
-
-      <button
-        onClick={()=>
-          setShowReferralPopup(false)
-        }
-        style={{
-          width:"100%",
-          padding:12,
-          border:"none",
-          borderRadius:12,
-          background:"#16a34a",
-          color:"#fff",
-          fontWeight:"bold",
-          fontSize:16,
-          cursor:"pointer"
-        }}
-      >
-        🔥 Rozumiem
-      </button>
-
-    </div>
-  </div>
-)}
-        
     </div>
   );
 }
+      {showReferralPopup && (
+        <div style={{
+          position:"fixed",
+          inset:0,
+          background:"rgba(0,0,0,.7)",
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center",
+          zIndex:9999,
+          padding:20
+        }}>
+
+          <div style={{
+            background:"#fff",
+            padding:25,
+            borderRadius:16,
+            width:340,
+            textAlign:"center",
+            boxShadow:"0 0 25px rgba(0,0,0,.3)"
+          }}>
+
+            <h2 style={{
+              marginTop:0,
+              color:"#16a34a"
+            }}>
+              🎁 Program poleceń
+            </h2>
+
+            <p style={{
+              lineHeight:1.6,
+              fontSize:15
+            }}>
+              Polecaj znajomych i zdobywaj
+              <strong> +10ml gratis </strong>
+              za każdą poleconą osobę 👀
+            </p>
+
+            <div style={{
+              background:"#eff6ff",
+              border:"1px solid #93c5fd",
+              borderRadius:12,
+              padding:12,
+              marginTop:15,
+              marginBottom:12,
+              fontSize:14,
+              lineHeight:1.5
+            }}>
+              🔥 Polecona osoba również
+              otrzyma bonus do pierwszego
+              zamówienia.
+            </div>
+
+            <div style={{
+              background:"#fef9c3",
+              border:"1px solid #fde047",
+              borderRadius:12,
+              padding:12,
+              marginBottom:18,
+              fontSize:14,
+              lineHeight:1.5,
+              color:"#854d0e",
+              fontWeight:"bold"
+            }}>
+              📦 Możliwa wysyłka
+              do Paczkomatu
+              w cenie 10zł
+            </div>
+
+            <button
+              onClick={()=>
+                setShowReferralPopup(false)
+              }
+              style={{
+                width:"100%",
+                padding:12,
+                border:"none",
+                borderRadius:12,
+                background:"#16a34a",
+                color:"#fff",
+                fontWeight:"bold",
+                fontSize:16,
+                cursor:"pointer"
+              }}
+            >
+              🔥 Rozumiem
+            </button>
+
+          </div>
+        </div>
+      )}
+
