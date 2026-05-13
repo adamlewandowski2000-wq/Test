@@ -273,8 +273,7 @@ const sendOrder = async () => {
       "success"
     );
 
-    // ✅ POPUP
-    setShowReferralPopup(true);
+
 
     localStorage.clear();
 
@@ -289,8 +288,7 @@ const sendOrder = async () => {
 
     console.error(err);
 
-    // ✅ popup nawet przy błędzie
-    setShowReferralPopup(true);
+  
 
     showMessage(
       "❌ Problem z wysyłką",
