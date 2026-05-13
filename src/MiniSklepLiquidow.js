@@ -787,13 +787,7 @@ setShowReferralPopup(true);
           : "📤 Wyślij zamówienie"}
       </button>
 
-      {/* ✅ POPUP */}
 
-
-{/* ✅ POPUP */}
-
-```jsx
-{/* ✅ POPUP */}
 
 {showReferralPopup && (
   <div
