@@ -285,7 +285,7 @@ setShowReferralPopup(true);
 
 
 
-  setShowReferralPopup(true);
+  
 
   localStorage.clear();
 
