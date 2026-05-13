@@ -1,10 +1,9 @@
-
-
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbwccf2IzIahYmWHuUVkIJqYv88TpVVZCzPyWcdQ_oLoc7rwJL9YhES213LyBEsv-Dny6Q/exec";
+  "https://script.google.com/macros/s/AKfycbzzidf4TZnkJ59YeubZQknj_Y3w0blwxNCpXa1LiSe2oEfXYo8CUMnTJXKHUZFuezFR/exec";
+
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
   const [selectedFlavor, setSelectedFlavor] = useState(null);
@@ -34,10 +33,6 @@ export default function MiniSklepLiquidow() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
   const [isSending, setIsSending] = useState(false);
-
-  // ✅ NOWE
-  const [showReferralPopup, setShowReferralPopup] =
-    useState(false);
 
   // ================= HELPERS =================
 
@@ -275,9 +270,6 @@ export default function MiniSklepLiquidow() {
         "success"
       );
 
-      // ✅ NOWE
-      setShowReferralPopup(true);
-
       localStorage.clear();
 
       setCart([]);
@@ -300,12 +292,82 @@ export default function MiniSklepLiquidow() {
 
   // ================= CATEGORY =================
 
-  const categoryColors = {
-    // TWOJE KATEGORIE
+ const categoryColors = {
+    "Miksy owocowe":["#f87171","#fecaca"],
+    "Owoce leśne":["#a78bfa","#e9d5ff"],
+    "Tropikalne/Egzotyczne":["#facc15","#fef08a"],
+    "Cytrusy/kwaśne":["#fde68a","#fef9c3"],
+    "Miętowe/mentholowe":["#60a5fa","#bfdbfe"],
+    "Inne smaki":["#34d399","#bbf7d0"]
   };
 
   const flavorCategories = {
-    // TWOJE SMAKI
+    "Miksy owocowe":[
+      {id:1,name:"Czerwone owoce, Czarna porzeczka, Truskawka, Jeżyna, Malina, Jagoda, Efekt chłodu"},
+      {id:2,name:"Czerwone owoce, Truskawka, Czarna porzeczka, Efekt lodowaty"},
+      {id:3,name:"Czerwone owoce, Jagoda, Malina, Wiśniowy, Efekt chłodu"},
+      {id:4,name:"Czerwone owoce, Ananas, Efekt lodowaty"},
+      {id:5,name:"Czerwone owoce, Mango, Efekt chłodu"},
+      {id:6,name:"Czerwone owoce, Wata cukrowa"},
+      {id:7,name:"Czerwone owoce, Jabłko, Cytryna"},
+      {id:8,name:"Czerwone owoce, Wiśniowy, Jagody, Anyż, Eukaliptus, Mentol, Efekt chłodu"},
+      {id:9,name:"Czerwone owoce, Anyż, Mentol, Efekt chłodu"},
+      {id:10,name:"Czerwone owoce, Guma do żucia, Mentol, Anyż, Efekt chłodu"},
+      {id:11,name:"Czerwone owoce, Winogrono, Anyż, Mentol, Efekt chłodu"}
+    ],
+    "Owoce leśne":[
+      {id:12,name:"Czarna porzeczka, Efekt chłodu"},
+      {id:13,name:"Jagody, Jabłko, Efekt chłodu"},
+      {id:14,name:"Truskawka, Malina, Czarna porzeczka, Jeżyna, Efekt chłodu"},
+      {id:15,name:"Jagoda, Czerwona porzeczka, Owoc węża, Efekt chłodu"},
+      {id:16,name:"Malina, Brzoskwinia, Cytryna, Cynamon, Efekt chłodu"},
+      {id:17,name:"Owoce leśne, Granat, Róża, Nutka świeżości"},
+      {id:18,name:"Wiśnia, Agrest czarny"},
+      {id:19,name:"Wata cukrowa, Fiołek, Jagoda, Owoce leśne, Nutka świeżości"},
+      {id:20,name:"Malina, Jagoda, Cytryna"},
+      {id:21,name:"Granat, Truskawka, Czarna porzeczka, Efekt chłodu"}
+    ],
+    "Tropikalne/Egzotyczne":[
+      {id:22,name:"Granat, Truskawka, Kiwi, Efekt chłodu"},
+      {id:23,name:"Granat, Truskawka, Smoczy owoc, Efekt chłodu"},
+      {id:24,name:"Arbuz, Kiwi"},
+      {id:25,name:"Arbuz, Truskawka, Granat, Efekt chłodu"},
+      {id:26,name:"Żółty owoc smoka, Melon, Arbuz, Efekt chłodu"},
+      {id:27,name:"Truskawka, Mango, Granat, Efekt chłodu"},
+      {id:28,name:"Ananas, Cytryna, Efekt chłodu"},
+      {id:29,name:"Ananas, Liczi, Efekt chłodu"},
+      {id:30,name:"Smoczy owoc, Kiwi, Guawa, Truskawka"},
+      {id:31,name:"Smoczy owoc, Truskawka, Efekt chłodu"},
+      {id:32,name:"Kokos, Banan, Kiwi"}
+    ],
+    "Cytrusy/kwaśne":[
+      {id:33,name:"Cytryna, Cytryna zielona, Efekt chłodu"},
+      {id:34,name:"Kwaśne cukierki, Jabłko, Efekt chłodu"},
+      {id:35,name:"Grejpfrut, Truskawka"}
+    ],
+    "Miętowe/mentholowe":[
+      {id:36,name:"Menthol"},
+      {id:37,name:"Mięta słodka"},
+      {id:38,name:"Mięta lodowa"}
+    ],
+    "Inne smaki":[
+      {id:39,name:"Granat, Truskawka, Efekt lodowaty"},
+      {id:40,name:"Wiśnia, Truskawka, Efekt chłodu"},
+      {id:41,name:"Jabłko, Gruszka, Kaktus, Efekt chłodu"},
+      {id:42,name:"Brzoskwinia, Morela, Efekt chłodu"},
+      {id:43,name:"Gruszka, Melon, Granat, Efekt chłodu"},
+      {id:44,name:"Żółte kiwi, Truskawka, Granat, Efekt chłodu"},
+      {id:45,name:"Niebieska malina, Melon, Efekt chłodu"},
+      {id:46,name:"Cola, Efekt lodowaty"},
+      {id:47,name:"Arbuz"},
+      {id:48,name:"Energetyk"},
+      {id:49,name:"Brzoskwinia, Kiwi, Malina"},
+      {id:50,name:"Winogrono"},
+      {id:51,name:"Winogrono, Jabłko"},
+      {id:52,name:"Winogrono, Efekt chłodu"},
+      {id:53,name:"Czerwone owoce, Malina, Efekt chłodu"},
+      {id:54,name:"Czerwone jagody, Kaktus, Cytryna, Efekt chłodu"}
+    ]
   };
 
   return (
@@ -323,109 +385,383 @@ export default function MiniSklepLiquidow() {
         Mini sklep liquidów
       </h2>
 
-      {/* RESZTA TWOJEGO JSX */}
+      <input
+        placeholder="Imię i Nazwisko"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{
+          width: "50%",
+          padding: "4px 6px",
+          marginBottom: 10,
+          fontSize: 18,
+        }}
+      />
 
-      {/* ✅ NOWY POPUP */}
+      <h3>Smaki</h3>
 
-      {showReferralPopup && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            padding: 20,
-          }}
-        >
+      {Object.entries(flavorCategories).map(
+        ([cat, flavors]) => {
+          const [main, light] =
+            categoryColors[cat];
+
+          return (
+            <details
+              key={cat}
+              style={{
+                marginBottom: 10,
+                borderRadius: 8,
+                padding: 5,
+                background: main,
+              }}
+            >
+              <summary
+                style={{
+                  fontWeight: "bold",
+                  padding: 6,
+                }}
+              >
+                {cat}
+              </summary>
+
+              <div
+                style={{
+                  padding: 6,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 4,
+                }}
+              >
+                {flavors.map((f) => {
+                  const stock =
+                    getAvailableMl(f.id);
+
+                  const stockColor =
+                    stock === 0
+                      ? "red"
+                      : stock < 120
+                      ? "#facc15"
+                      : "#22c55e";
+
+                  return (
+                    <label
+                      key={f.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: 13,
+                        background: `linear-gradient(90deg, ${light}, #fff)`,
+                        borderRadius: 6,
+                        padding: "4px 6px",
+                        cursor:
+                          stock === 0
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          stock === 0 ? 0.6 : 1,
+                        transition: ".2s",
+                      }}
+                      onClick={() => {
+                        if (stock === 0) {
+                          showMessage(
+                            "❌ Brak na stanie",
+                            "error"
+                          );
+                        } else {
+                          setSelectedFlavor(f);
+                        }
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 16,
+                          height: 16,
+                          border: "1px solid #000",
+                          display: "inline-block",
+                          marginRight: 6,
+                          textAlign: "center",
+                          lineHeight: "16px",
+                          background:
+                            selectedFlavor?.id ===
+                            f.id
+                              ? "green"
+                              : "#fff",
+                          color: "#fff",
+                        }}
+                      >
+                        {selectedFlavor?.id ===
+                        f.id
+                          ? "✔"
+                          : ""}
+                      </span>
+
+                      <div style={{ flex: 1 }}>
+                        {f.id}. {f.name}
+
+                        {[1, 14, 27, 36].includes(
+                          f.id
+                        ) && (
+                          <span className="bestseller">
+                            🔥 BESTSELLER
+                          </span>
+                        )}
+
+                        <div
+                          style={{
+                            marginTop: 2,
+                            fontWeight: "bold",
+                            color: stockColor,
+                          }}
+                        >
+                          na stanie: {stock}ml
+                        </div>
+
+                        {stock <= 60 &&
+                          stock > 0 && (
+                            <div className="lowStock">
+                              ⚠️ Końcówka smaku
+                            </div>
+                          )}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </details>
+          );
+        }
+      )}
+
+      <h3>Baza</h3>
+
+      {["Nikotyna", "Sól"].map((v) => {
+        const disabled =
+          v === "Nikotyna" &&
+          strength === 36;
+
+        return (
           <div
+            key={v}
+            onClick={() =>
+              !disabled &&
+              setBase(v.toLowerCase())
+            }
             style={{
-              background: "#fff",
-              padding: 25,
-              borderRadius: 16,
-              width: 340,
+              display: "inline-block",
+              width: 70,
+              height: 30,
+              marginRight: 6,
+              border: "1px solid #000",
+              borderRadius: 4,
               textAlign: "center",
-              boxShadow: "0 0 25px rgba(0,0,0,.3)",
+              lineHeight: "30px",
+              cursor: disabled
+                ? "not-allowed"
+                : "pointer",
+              background:
+                base?.toLowerCase() ===
+                v.toLowerCase()
+                  ? "green"
+                  : "#eee",
+              color:
+                base?.toLowerCase() ===
+                v.toLowerCase()
+                  ? "#fff"
+                  : "#000",
             }}
           >
-            <h2
-              style={{
-                marginTop: 0,
-                color: "#16a34a",
-              }}
-            >
-              🎁 Program poleceń
-            </h2>
-
-            <p
-              style={{
-                lineHeight: 1.6,
-                fontSize: 15,
-              }}
-            >
-              Polecaj znajomych i zdobywaj
-              <strong> +10ml gratis </strong>
-              za każdą poleconą osobę 👀
-            </p>
-
-            <div
-              style={{
-                background: "#eff6ff",
-                border: "1px solid #93c5fd",
-                borderRadius: 12,
-                padding: 12,
-                marginTop: 15,
-                marginBottom: 12,
-                fontSize: 14,
-                lineHeight: 1.5,
-              }}
-            >
-              🔥 Polecona osoba również
-              otrzyma bonus do pierwszego
-              zamówienia.
-            </div>
-
-            <div
-              style={{
-                background: "#fef9c3",
-                border: "1px solid #fde047",
-                borderRadius: 12,
-                padding: 12,
-                marginBottom: 18,
-                fontSize: 14,
-                lineHeight: 1.5,
-                color: "#854d0e",
-                fontWeight: "bold",
-              }}
-            >
-              📦 Możliwa wysyłka
-              do Paczkomatu
-              w cenie 10zł
-            </div>
-
-            <button
-              onClick={() =>
-                setShowReferralPopup(false)
-              }
-              style={{
-                width: "100%",
-                padding: 12,
-                border: "none",
-                borderRadius: 12,
-                background: "#16a34a",
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: 16,
-                cursor: "pointer",
-              }}
-            >
-              🔥 Rozumiem
-            </button>
+            {v}
           </div>
+        );
+      })}
+
+      <h3>Moc</h3>
+
+      {[6, 12, 18, 24, 36].map((v) => {
+        const disabled =
+          base === "nikotyna" && v === 36;
+
+        return (
+          <div
+            key={v}
+            onClick={() =>
+              !disabled && setStrength(v)
+            }
+            style={{
+              display: "inline-block",
+              width: 40,
+              height: 30,
+              marginRight: 6,
+              border: "1px solid #000",
+              borderRadius: 4,
+              textAlign: "center",
+              lineHeight: "30px",
+              cursor: disabled
+                ? "not-allowed"
+                : "pointer",
+              background:
+                strength === v
+                  ? "green"
+                  : "#eee",
+              color:
+                strength === v
+                  ? "#fff"
+                  : "#000",
+            }}
+          >
+            {v}mg
+          </div>
+        );
+      })}
+
+      <h3>Ilość (ml)</h3>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <input
+          type="number"
+          step={10}
+          min={10}
+          value={ml}
+          onChange={(e) =>
+            setMl(e.target.value)
+          }
+          style={{
+            width: "30%",
+            padding: "4px 6px",
+            fontSize: 18,
+          }}
+        />
+
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: "#b91c1c",
+            background: "#fef08a",
+            padding: "2px 6px",
+            borderRadius: 6,
+            animation: "pulse 1s infinite",
+          }}
+        >
+          🌟 Kupując 60ml oszczędzasz!
+        </span>
+      </div>
+
+      {ml > 0 && ml < 60 && (
+        <div className="progressBox">
+          🔥 Do najlepszej ceny brakuje Ci tylko{" "}
+          {60 - Number(ml)}ml
         </div>
       )}
+
+      <button
+        onClick={addToCart}
+        className={`addBtn ${
+          Number(ml) === 60
+            ? "bestPrice"
+            : ""
+        }`}
+        style={{
+          width: "100%",
+          marginTop: 10,
+          padding: 12,
+          borderRadius: 8,
+          background: "#22c55e",
+          color: "#fff",
+          border: "none",
+          fontSize: 16,
+        }}
+      >
+        {Number(ml) === 60
+          ? "🔥 Najlepsza opcja — dodaj 60ml"
+          : "➕ Dodaj do koszyka"}
+      </button>
+
+      {message && (
+        <div
+          className={
+            messageType === "success"
+              ? "successPulse"
+              : ""
+          }
+          style={{
+            marginTop: 8,
+            padding: 8,
+            background:
+              messageType === "error"
+                ? "#fecaca"
+                : "#bbf7d0",
+            borderRadius: 6,
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          {message}
+        </div>
+      )}
+
+      <h3>Koszyk</h3>
+
+      {cart.map((i, idx) => (
+        <div
+          key={idx}
+          style={{ marginBottom: 4 }}
+        >
+          {i.flavor.id}/{i.ml}ml/
+          {i.strength}mg/{i.base} —{" "}
+          {i.price.toFixed(2)}zł
+
+          <button
+            onClick={() => removeItem(idx)}
+            style={{ marginLeft: 6 }}
+          >
+            ❌
+          </button>
+        </div>
+      ))}
+
+      <h3
+        style={{
+          marginTop: 14,
+          textAlign: "center",
+          fontSize: 24,
+        }}
+      >
+        💰 Suma: {total.toFixed(2)} zł
+      </h3>
+
+      <div className="cartFloating">
+        🛒 Koszyk: {cart.length} produktów —{" "}
+        {total.toFixed(2)} zł
+      </div>
+
+      <button
+        disabled={isSending}
+        onClick={sendOrder}
+        className="addBtn"
+        style={{
+          width: "100%",
+          marginTop: 15,
+          padding: 12,
+          background: isSending
+            ? "#9ca3af"
+            : "#16a34a",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          fontSize: 18,
+          fontWeight: "bold",
+        }}
+      >
+        {isSending
+          ? "⏳ Wysyłanie..."
+          : "📤 Wyślij zamówienie"}
+      </button>
 
       <style>{`
         @keyframes pulse {
