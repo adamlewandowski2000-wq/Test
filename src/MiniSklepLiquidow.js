@@ -521,22 +521,31 @@ const sendOrder = async () => {
                     </span>
                   )}
 
-                  <div
-                    style={{
-                      marginTop: 2,
-                      fontWeight: "bold",
-                      color: stockColor,
-                    }}
-                  >
-                    na stanie: {stock}ml
-                  </div>
+                 <div
+  style={{
+    marginTop: 2,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    flexWrap: "wrap",
+    fontSize: 12,
+  }}
+>
+  <span
+    style={{
+      fontWeight: "bold",
+      color: stockColor,
+    }}
+  >
+    na stanie: {stock}ml
+  </span>
 
-                  {stock <= 60 &&
-                    stock > 0 && (
-                      <div className="lowStock">
-                        ⚠️ Końcówka smaku
-                      </div>
-                    )}
+  {stock <= 60 && stock > 0 && (
+    <span className="lowStock">
+      ⚠️ Końcówka smaku
+    </span>
+  )}
+</div>
                 </div>
               </label>
             );
