@@ -789,7 +789,7 @@ setShowReferralPopup(true);
 
       {/* ✅ POPUP */}
 
- ```jsx
+
 {/* ✅ POPUP */}
 
 {showReferralPopup && (
