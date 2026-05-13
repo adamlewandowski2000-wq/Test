@@ -789,6 +789,9 @@ setShowReferralPopup(true);
 
 
 
+
+
+```jsx
 {showReferralPopup && (
   <div
     style={{
@@ -848,11 +851,15 @@ setShowReferralPopup(true);
             color: "#15803d",
           }}
         >
-          {lastOrderTotal.toFixed(2)} zł
+          {Number(lastOrderTotal).toFixed(2)} zł
         </div>
       </div>
 
-      <h3 style={{ color: "#16a34a" }}>
+      <h3
+        style={{
+          color: "#16a34a",
+        }}
+      >
         🎁 Program poleceń
       </h3>
 
@@ -879,9 +886,8 @@ setShowReferralPopup(true);
           lineHeight: 1.5,
         }}
       >
-        🔥 Polecona osoba również
-        otrzyma bonus do pierwszego
-        zamówienia.
+        🔥 Polecona osoba również otrzyma bonus
+        do pierwszego zamówienia.
       </div>
 
       <div
@@ -897,8 +903,7 @@ setShowReferralPopup(true);
           fontWeight: "bold",
         }}
       >
-        📦 Możliwa wysyłka
-        do Paczkomatu
+        📦 Możliwa wysyłka do Paczkomatu
         w cenie 10zł
       </div>
 
@@ -923,59 +928,8 @@ setShowReferralPopup(true);
     </div>
   </div>
 )}
+```
 
-
-
-          <div
-            style={{
-              background: "#fff",
-              padding: 25,
-              borderRadius: 16,
-              width: 340,
-              textAlign: "center",
-              boxShadow: "0 0 25px rgba(0,0,0,.3)",
-            }}
-          >
-            <h2
-              style={{
-                marginTop: 0,
-                color: "#16a34a",
-              }}
-            >
-              🎁 Program poleceń
-            </h2>
-
-            <p
-              style={{
-                lineHeight: 1.6,
-                fontSize: 15,
-              }}
-            >
-              Polecaj znajomych i zdobywaj
-              <strong> +10ml gratis </strong>
-              za każdą poleconą osobę 👀
-            </p>
-
-            <div
-              style={{
-                background: "#eff6ff",
-                border: "1px solid #93c5fd",
-                borderRadius: 12,
-                padding: 12,
-                marginTop: 15,
-                marginBottom: 12,
-                fontSize: 14,
-                lineHeight: 1.5,
-              }}
-            >
-              🔥 Polecona osoba również
-              otrzyma bonus do pierwszego
-              zamówienia.
-            </div>
-
-            <div
-              style={{
-                background: "#fef9c3",
   
 
       <style>{`
