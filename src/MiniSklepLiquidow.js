@@ -33,6 +33,8 @@ export default function MiniSklepLiquidow() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
   const [isSending, setIsSending] = useState(false);
+  const [showReferralPopup, setShowReferralPopup] =
+  useState(false);
 
   // ================= HELPERS =================
 
@@ -218,7 +220,7 @@ export default function MiniSklepLiquidow() {
 
     showMessage("✅ Dodano do koszyka", "success");
   };
-
+setShowReferralPopup(true);
   const removeItem = (idx) =>
     setCart(cart.filter((_, i) => i !== idx));
 
@@ -837,6 +839,81 @@ export default function MiniSklepLiquidow() {
           animation: pulse 1s infinite;
         }
       `}</style>
+{showReferralPopup && (
+  <div style={{
+    position:"fixed",
+    inset:0,
+    background:"rgba(0,0,0,.7)",
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    zIndex:9999,
+    padding:20
+  }}>
+
+    <div style={{
+      background:"#fff",
+      padding:25,
+      borderRadius:16,
+      width:340,
+      textAlign:"center",
+      boxShadow:"0 0 25px rgba(0,0,0,.3)"
+    }}>
+
+      <h2 style={{
+        marginTop:0,
+        color:"#16a34a"
+      }}>
+        🎁 Program poleceń
+      </h2>
+
+      <p style={{
+        lineHeight:1.6,
+        fontSize:15
+      }}>
+        Polecaj znajomych i zdobywaj
+        <strong> +10ml gratis </strong>
+        za każdą poleconą osobę 👀
+      </p>
+
+      <div style={{
+        background:"#eff6ff",
+        border:"1px solid #93c5fd",
+        borderRadius:12,
+        padding:12,
+        marginTop:15,
+        marginBottom:18,
+        fontSize:14,
+        lineHeight:1.5
+      }}>
+        🔥 Polecona osoba również
+        otrzyma bonus do pierwszego
+        zamówienia.
+      </div>
+
+      <button
+        onClick={()=>
+          setShowReferralPopup(false)
+        }
+        style={{
+          width:"100%",
+          padding:12,
+          border:"none",
+          borderRadius:12,
+          background:"#16a34a",
+          color:"#fff",
+          fontWeight:"bold",
+          fontSize:16,
+          cursor:"pointer"
+        }}
+      >
+        🔥 Rozumiem
+      </button>
+
+    </div>
+  </div>
+)}
+        
     </div>
   );
 }
