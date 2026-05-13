@@ -792,6 +792,9 @@ setShowReferralPopup(true);
 
 {/* ✅ POPUP */}
 
+```jsx
+{/* ✅ POPUP */}
+
 {showReferralPopup && (
   <div
     style={{
@@ -813,10 +816,8 @@ setShowReferralPopup(true);
         width: 340,
         textAlign: "center",
         boxShadow: "0 0 25px rgba(0,0,0,.3)",
-        animation: "popupAnim .25s ease",
       }}
     >
-
       <h2
         style={{
           marginTop: 0,
@@ -857,11 +858,7 @@ setShowReferralPopup(true);
         </div>
       </div>
 
-      <h3
-        style={{
-          color: "#16a34a",
-        }}
-      >
+      <h3 style={{ color: "#16a34a" }}>
         🎁 Program poleceń
       </h3>
 
@@ -933,6 +930,7 @@ setShowReferralPopup(true);
   </div>
 )}
 ```
+
 
           <div
             style={{
