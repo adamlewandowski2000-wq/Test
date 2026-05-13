@@ -32,13 +32,10 @@ export default function MiniSklepLiquidow() {
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
-  const [isSending, setIsSending] = useState(false);
-  const [showReferralPopup, setShowReferralPopup] =
-  useState(false);
+ const [isSending, setIsSending] = useState(false);
 
-  // ✅ NOWE
-  const [showReferralPopup, setShowReferralPopup] =
-    useState(false);
+const [showReferralPopup, setShowReferralPopup] =
+  useState(false);
 
   // ================= HELPERS =================
 
