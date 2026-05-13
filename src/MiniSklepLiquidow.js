@@ -34,6 +34,10 @@ export default function MiniSklepLiquidow() {
   const [messageType, setMessageType] = useState("info");
   const [isSending, setIsSending] = useState(false);
 
+  // ✅ NOWE
+  const [showReferralPopup, setShowReferralPopup] =
+    useState(false);
+
   // ================= HELPERS =================
 
   const showMessage = (txt, type = "info") => {
@@ -270,6 +274,9 @@ export default function MiniSklepLiquidow() {
         "success"
       );
 
+      // ✅ POPUP
+      setShowReferralPopup(true);
+
       localStorage.clear();
 
       setCart([]);
@@ -292,7 +299,7 @@ export default function MiniSklepLiquidow() {
 
   // ================= CATEGORY =================
 
- const categoryColors = {
+   const categoryColors = {
     "Miksy owocowe":["#f87171","#fecaca"],
     "Owoce leśne":["#a78bfa","#e9d5ff"],
     "Tropikalne/Egzotyczne":["#facc15","#fef08a"],
@@ -369,7 +376,6 @@ export default function MiniSklepLiquidow() {
       {id:54,name:"Czerwone jagody, Kaktus, Cytryna, Efekt chłodu"}
     ]
   };
-
   return (
     <div
       style={{
@@ -381,364 +387,8 @@ export default function MiniSklepLiquidow() {
         boxShadow: "0 0 20px rgba(0,0,0,.2)",
       }}
     >
-      <h2 style={{ textAlign: "center" }}>
-        Mini sklep liquidów
-      </h2>
 
-      <input
-        placeholder="Imię i Nazwisko"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{
-          width: "50%",
-          padding: "4px 6px",
-          marginBottom: 10,
-          fontSize: 18,
-        }}
-      />
-
-      <h3>Smaki</h3>
-
-      {Object.entries(flavorCategories).map(
-        ([cat, flavors]) => {
-          const [main, light] =
-            categoryColors[cat];
-
-          return (
-            <details
-              key={cat}
-              style={{
-                marginBottom: 10,
-                borderRadius: 8,
-                padding: 5,
-                background: main,
-              }}
-            >
-              <summary
-                style={{
-                  fontWeight: "bold",
-                  padding: 6,
-                }}
-              >
-                {cat}
-              </summary>
-
-              <div
-                style={{
-                  padding: 6,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
-                }}
-              >
-                {flavors.map((f) => {
-                  const stock =
-                    getAvailableMl(f.id);
-
-                  const stockColor =
-                    stock === 0
-                      ? "red"
-                      : stock < 120
-                      ? "#facc15"
-                      : "#22c55e";
-
-                  return (
-                    <label
-                      key={f.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        fontSize: 13,
-                        background: `linear-gradient(90deg, ${light}, #fff)`,
-                        borderRadius: 6,
-                        padding: "4px 6px",
-                        cursor:
-                          stock === 0
-                            ? "not-allowed"
-                            : "pointer",
-                        opacity:
-                          stock === 0 ? 0.6 : 1,
-                        transition: ".2s",
-                      }}
-                      onClick={() => {
-                        if (stock === 0) {
-                          showMessage(
-                            "❌ Brak na stanie",
-                            "error"
-                          );
-                        } else {
-                          setSelectedFlavor(f);
-                        }
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 16,
-                          height: 16,
-                          border: "1px solid #000",
-                          display: "inline-block",
-                          marginRight: 6,
-                          textAlign: "center",
-                          lineHeight: "16px",
-                          background:
-                            selectedFlavor?.id ===
-                            f.id
-                              ? "green"
-                              : "#fff",
-                          color: "#fff",
-                        }}
-                      >
-                        {selectedFlavor?.id ===
-                        f.id
-                          ? "✔"
-                          : ""}
-                      </span>
-
-                      <div style={{ flex: 1 }}>
-                        {f.id}. {f.name}
-
-                        {[1, 14, 27, 36].includes(
-                          f.id
-                        ) && (
-                          <span className="bestseller">
-                            🔥 BESTSELLER
-                          </span>
-                        )}
-
-                        <div
-                          style={{
-                            marginTop: 2,
-                            fontWeight: "bold",
-                            color: stockColor,
-                          }}
-                        >
-                          na stanie: {stock}ml
-                        </div>
-
-                        {stock <= 60 &&
-                          stock > 0 && (
-                            <div className="lowStock">
-                              ⚠️ Końcówka smaku
-                            </div>
-                          )}
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-            </details>
-          );
-        }
-      )}
-
-      <h3>Baza</h3>
-
-      {["Nikotyna", "Sól"].map((v) => {
-        const disabled =
-          v === "Nikotyna" &&
-          strength === 36;
-
-        return (
-          <div
-            key={v}
-            onClick={() =>
-              !disabled &&
-              setBase(v.toLowerCase())
-            }
-            style={{
-              display: "inline-block",
-              width: 70,
-              height: 30,
-              marginRight: 6,
-              border: "1px solid #000",
-              borderRadius: 4,
-              textAlign: "center",
-              lineHeight: "30px",
-              cursor: disabled
-                ? "not-allowed"
-                : "pointer",
-              background:
-                base?.toLowerCase() ===
-                v.toLowerCase()
-                  ? "green"
-                  : "#eee",
-              color:
-                base?.toLowerCase() ===
-                v.toLowerCase()
-                  ? "#fff"
-                  : "#000",
-            }}
-          >
-            {v}
-          </div>
-        );
-      })}
-
-      <h3>Moc</h3>
-
-      {[6, 12, 18, 24, 36].map((v) => {
-        const disabled =
-          base === "nikotyna" && v === 36;
-
-        return (
-          <div
-            key={v}
-            onClick={() =>
-              !disabled && setStrength(v)
-            }
-            style={{
-              display: "inline-block",
-              width: 40,
-              height: 30,
-              marginRight: 6,
-              border: "1px solid #000",
-              borderRadius: 4,
-              textAlign: "center",
-              lineHeight: "30px",
-              cursor: disabled
-                ? "not-allowed"
-                : "pointer",
-              background:
-                strength === v
-                  ? "green"
-                  : "#eee",
-              color:
-                strength === v
-                  ? "#fff"
-                  : "#000",
-            }}
-          >
-            {v}mg
-          </div>
-        );
-      })}
-
-      <h3>Ilość (ml)</h3>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <input
-          type="number"
-          step={10}
-          min={10}
-          value={ml}
-          onChange={(e) =>
-            setMl(e.target.value)
-          }
-          style={{
-            width: "30%",
-            padding: "4px 6px",
-            fontSize: 18,
-          }}
-        />
-
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: "#b91c1c",
-            background: "#fef08a",
-            padding: "2px 6px",
-            borderRadius: 6,
-            animation: "pulse 1s infinite",
-          }}
-        >
-          🌟 Kupując 60ml oszczędzasz!
-        </span>
-      </div>
-
-      {ml > 0 && ml < 60 && (
-        <div className="progressBox">
-          🔥 Do najlepszej ceny brakuje Ci tylko{" "}
-          {60 - Number(ml)}ml
-        </div>
-      )}
-
-      <button
-        onClick={addToCart}
-        className={`addBtn ${
-          Number(ml) === 60
-            ? "bestPrice"
-            : ""
-        }`}
-        style={{
-          width: "100%",
-          marginTop: 10,
-          padding: 12,
-          borderRadius: 8,
-          background: "#22c55e",
-          color: "#fff",
-          border: "none",
-          fontSize: 16,
-        }}
-      >
-        {Number(ml) === 60
-          ? "🔥 Najlepsza opcja — dodaj 60ml"
-          : "➕ Dodaj do koszyka"}
-      </button>
-
-      {message && (
-        <div
-          className={
-            messageType === "success"
-              ? "successPulse"
-              : ""
-          }
-          style={{
-            marginTop: 8,
-            padding: 8,
-            background:
-              messageType === "error"
-                ? "#fecaca"
-                : "#bbf7d0",
-            borderRadius: 6,
-            textAlign: "center",
-            fontWeight: "bold",
-          }}
-        >
-          {message}
-        </div>
-      )}
-
-      <h3>Koszyk</h3>
-
-      {cart.map((i, idx) => (
-        <div
-          key={idx}
-          style={{ marginBottom: 4 }}
-        >
-          {i.flavor.id}/{i.ml}ml/
-          {i.strength}mg/{i.base} —{" "}
-          {i.price.toFixed(2)}zł
-
-          <button
-            onClick={() => removeItem(idx)}
-            style={{ marginLeft: 6 }}
-          >
-            ❌
-          </button>
-        </div>
-      ))}
-
-      <h3
-        style={{
-          marginTop: 14,
-          textAlign: "center",
-          fontSize: 24,
-        }}
-      >
-        💰 Suma: {total.toFixed(2)} zł
-      </h3>
-
-      <div className="cartFloating">
-        🛒 Koszyk: {cart.length} produktów —{" "}
-        {total.toFixed(2)} zł
-      </div>
+      {/* TWÓJ CAŁY JSX */}
 
       <button
         disabled={isSending}
@@ -762,6 +412,108 @@ export default function MiniSklepLiquidow() {
           ? "⏳ Wysyłanie..."
           : "📤 Wyślij zamówienie"}
       </button>
+
+      {/* ✅ POPUP */}
+
+      {showReferralPopup && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: 20,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: 25,
+              borderRadius: 16,
+              width: 340,
+              textAlign: "center",
+              boxShadow: "0 0 25px rgba(0,0,0,.3)",
+            }}
+          >
+            <h2
+              style={{
+                marginTop: 0,
+                color: "#16a34a",
+              }}
+            >
+              🎁 Program poleceń
+            </h2>
+
+            <p
+              style={{
+                lineHeight: 1.6,
+                fontSize: 15,
+              }}
+            >
+              Polecaj znajomych i zdobywaj
+              <strong> +10ml gratis </strong>
+              za każdą poleconą osobę 👀
+            </p>
+
+            <div
+              style={{
+                background: "#eff6ff",
+                border: "1px solid #93c5fd",
+                borderRadius: 12,
+                padding: 12,
+                marginTop: 15,
+                marginBottom: 12,
+                fontSize: 14,
+                lineHeight: 1.5,
+              }}
+            >
+              🔥 Polecona osoba również
+              otrzyma bonus do pierwszego
+              zamówienia.
+            </div>
+
+            <div
+              style={{
+                background: "#fef9c3",
+                border: "1px solid #fde047",
+                borderRadius: 12,
+                padding: 12,
+                marginBottom: 18,
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "#854d0e",
+                fontWeight: "bold",
+              }}
+            >
+              📦 Możliwa wysyłka
+              do Paczkomatu
+              w cenie 10zł
+            </div>
+
+            <button
+              onClick={() =>
+                setShowReferralPopup(false)
+              }
+              style={{
+                width: "100%",
+                padding: 12,
+                border: "none",
+                borderRadius: 12,
+                background: "#16a34a",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+            >
+              🔥 Rozumiem
+            </button>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes pulse {
