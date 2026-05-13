@@ -227,72 +227,80 @@ const [showReferralPopup, setShowReferralPopup] =
 
   // ================= SEND =================
 
-  const sendOrder = async () => {
-    if (!name)
-      return showMessage("❌ Podaj imię", "error");
+const sendOrder = async () => {
+  if (!name)
+    return showMessage("❌ Podaj imię", "error");
 
-    if (cart.length === 0)
-      return showMessage("❌ Koszyk pusty", "error");
+  if (cart.length === 0)
+    return showMessage("❌ Koszyk pusty", "error");
 
-    if (isSending) return;
+  if (isSending) return;
 
-    setIsSending(true);
+  setIsSending(true);
 
-    const orderText = cart
-      .map(
-        (i) =>
-          `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
-      )
-      .join("\n");
+  const orderText = cart
+    .map(
+      (i) =>
+        `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
+    )
+    .join("\n");
 
-    const total = cart.reduce(
-      (s, i) => s + i.price,
-      0
-    );
+  const total = cart.reduce(
+    (s, i) => s + i.price,
+    0
+  );
 
-    const usedAromas = {};
+  const usedAromas = {};
 
-    cart.forEach((i) => {
-      usedAromas[i.flavor.id] =
-        (usedAromas[i.flavor.id] || 0) + i.ml / 10;
+  cart.forEach((i) => {
+    usedAromas[i.flavor.id] =
+      (usedAromas[i.flavor.id] || 0) + i.ml / 10;
+  });
+
+  try {
+    await fetch(SHEET_API, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        orderText,
+        total,
+        usedAromas,
+      }),
     });
 
-    try {
-      await fetch(SHEET_API, {
-        method: "POST",
-        body: JSON.stringify({
-          name,
-          orderText,
-          total,
-          usedAromas,
-        }),
-      });
+    showMessage(
+      "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+      "success"
+    );
 
-   showMessage(
-  "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-  "success"
-);
+    // ✅ POPUP
+    setShowReferralPopup(true);
 
-setShowReferralPopup(true);
+    localStorage.clear();
 
-      // ✅ POPUP
-      setShowReferralPopup(true);
+    setCart([]);
+    setName("");
+    setMl("");
+    setStrength(null);
+    setBase(null);
+    setSelectedFlavor(null);
 
-      localStorage.clear();
+  } catch (err) {
 
-      setCart([]);
-      setName("");
-      setMl("");
-      setStrength(null);
-      setBase(null);
-      setSelectedFlavor(null);
-    } catch {
-      showMessage("❌ Błąd wysyłki", "error");
-    } finally {
-      setIsSending(false);
-    }
-  };
+    console.error(err);
 
+    // ✅ popup nawet przy błędzie
+    setShowReferralPopup(true);
+
+    showMessage(
+      "❌ Problem z wysyłką",
+      "error"
+    );
+
+  } finally {
+    setIsSending(false);
+  }
+};
   const total = cart.reduce(
     (s, i) => s + i.price,
     0
