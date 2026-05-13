@@ -50,8 +50,7 @@ const [lastOrderTotal, setLastOrderTotal] =
   const [showReferralPopup, setShowReferralPopup] =
     useState(false);
 
-  const [lastOrderTotal, setLastOrderTotal] =
-    useState(0);
+
 
   // ================= HELPERS =================
 
