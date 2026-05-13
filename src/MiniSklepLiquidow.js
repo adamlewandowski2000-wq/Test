@@ -665,7 +665,7 @@ const sendOrder = async () => {
       animation: "pulse 1s infinite",
     }}
   >
-    🌟 Kupując 60ml oszczędzasz!
+    🌟 Kupując 60ml jednego smaku oszczędzasz!
   </span>
 </div>
 
