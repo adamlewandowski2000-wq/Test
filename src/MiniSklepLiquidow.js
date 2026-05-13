@@ -257,47 +257,45 @@ const sendOrder = async () => {
       (usedAromas[i.flavor.id] || 0) + i.ml / 10;
   });
 
-  try {
-    await fetch(SHEET_API, {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        orderText,
-        total,
-        usedAromas,
-      }),
-    });
+try {
+  await fetch(SHEET_API, {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      orderText,
+      total,
+      usedAromas,
+    }),
+  });
 
-    showMessage(
-      "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-      "success"
-    );
-
-
-
-    localStorage.clear();
-
-    setCart([]);
-    setName("");
-    setMl("");
-    setStrength(null);
-    setBase(null);
-    setSelectedFlavor(null);
-
-  } catch (err) {
-
-    console.error(err);
+  showMessage(
+    "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+    "success"
+  );
 
   setShowReferralPopup(true);
 
-    showMessage(
-      "❌ Problem z wysyłką",
-      "error"
-    );
+  localStorage.clear();
 
-  } finally {
-    setIsSending(false);
-  }
+  setCart([]);
+  setName("");
+  setMl("");
+  setStrength(null);
+  setBase(null);
+  setSelectedFlavor(null);
+
+} catch (err) {
+
+  console.error(err);
+
+  showMessage(
+    "❌ Problem z wysyłką",
+    "error"
+  );
+
+} finally {
+  setIsSending(false);
+}
 };
   const total = cart.reduce(
     (s, i) => s + i.price,
