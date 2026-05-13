@@ -260,7 +260,6 @@ const sendOrder = async () => {
   try {
     await fetch(SHEET_API, {
       method: "POST",
-      mode: "no-cors"
       body: JSON.stringify({
         name,
         orderText,
@@ -289,7 +288,7 @@ const sendOrder = async () => {
 
     console.error(err);
 
-  
+  setShowReferralPopup(true);
 
     showMessage(
       "❌ Problem z wysyłką",
