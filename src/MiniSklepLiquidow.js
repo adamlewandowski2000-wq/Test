@@ -37,6 +37,11 @@ export default function MiniSklepLiquidow() {
 
 const [showReferralPopup, setShowReferralPopup] =
   useState(false);
+ 
+const [lastOrderTotal, setLastOrderTotal] =
+  useState(0);
+
+
 
   // ================= HELPERS =================
 
@@ -269,10 +274,16 @@ try {
     }),
   });
 
-  showMessage(
-    "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-    "success"
-  );
+setLastOrderTotal(total);
+
+showMessage(
+  "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+  "success"
+);
+
+setShowReferralPopup(true);
+
+
 
   setShowReferralPopup(true);
 
@@ -778,19 +789,151 @@ try {
 
       {/* ✅ POPUP */}
 
-      {showReferralPopup && (
+ ```jsx
+{/* ✅ POPUP */}
+
+{showReferralPopup && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+      padding: 20,
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: 25,
+        borderRadius: 16,
+        width: 340,
+        textAlign: "center",
+        boxShadow: "0 0 25px rgba(0,0,0,.3)",
+        animation: "popupAnim .25s ease",
+      }}
+    >
+
+      <h2
+        style={{
+          marginTop: 0,
+          color: "#16a34a",
+          fontSize: 28,
+        }}
+      >
+        ✅ Zamówienie przyjęte
+      </h2>
+
+      <div
+        style={{
+          background: "#dcfce7",
+          border: "2px solid #22c55e",
+          borderRadius: 12,
+          padding: 15,
+          marginBottom: 20,
+        }}
+      >
         <div
           style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            padding: 20,
+            fontSize: 14,
+            fontWeight: "bold",
+            marginBottom: 5,
           }}
         >
+          💰 Do zapłaty
+        </div>
+
+        <div
+          style={{
+            fontSize: 34,
+            fontWeight: "bold",
+            color: "#15803d",
+          }}
+        >
+          {lastOrderTotal.toFixed(2)} zł
+        </div>
+      </div>
+
+      <h3
+        style={{
+          color: "#16a34a",
+        }}
+      >
+        🎁 Program poleceń
+      </h3>
+
+      <p
+        style={{
+          lineHeight: 1.6,
+          fontSize: 15,
+        }}
+      >
+        Polecaj znajomych i zdobywaj
+        <strong> +10ml gratis </strong>
+        za każdą poleconą osobę 👀
+      </p>
+
+      <div
+        style={{
+          background: "#eff6ff",
+          border: "1px solid #93c5fd",
+          borderRadius: 12,
+          padding: 12,
+          marginTop: 15,
+          marginBottom: 12,
+          fontSize: 14,
+          lineHeight: 1.5,
+        }}
+      >
+        🔥 Polecona osoba również
+        otrzyma bonus do pierwszego
+        zamówienia.
+      </div>
+
+      <div
+        style={{
+          background: "#fef9c3",
+          border: "1px solid #fde047",
+          borderRadius: 12,
+          padding: 12,
+          marginBottom: 18,
+          fontSize: 14,
+          lineHeight: 1.5,
+          color: "#854d0e",
+          fontWeight: "bold",
+        }}
+      >
+        📦 Możliwa wysyłka
+        do Paczkomatu
+        w cenie 10zł
+      </div>
+
+      <button
+        onClick={() =>
+          setShowReferralPopup(false)
+        }
+        style={{
+          width: "100%",
+          padding: 12,
+          border: "none",
+          borderRadius: 12,
+          background: "#16a34a",
+          color: "#fff",
+          fontWeight: "bold",
+          fontSize: 16,
+          cursor: "pointer",
+        }}
+      >
+        🔥 Rozumiem
+      </button>
+    </div>
+  </div>
+)}
+```
+
           <div
             style={{
               background: "#fff",
