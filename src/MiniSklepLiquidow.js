@@ -33,6 +33,8 @@ export default function MiniSklepLiquidow() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
   const [isSending, setIsSending] = useState(false);
+  const [showReferralPopup, setShowReferralPopup] =
+  useState(false);
 
   // ✅ NOWE
   const [showReferralPopup, setShowReferralPopup] =
@@ -269,10 +271,12 @@ export default function MiniSklepLiquidow() {
         }),
       });
 
-      showMessage(
-        "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-        "success"
-      );
+   showMessage(
+  "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+  "success"
+);
+
+setShowReferralPopup(true);
 
       // ✅ POPUP
       setShowReferralPopup(true);
