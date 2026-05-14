@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
@@ -639,50 +640,7 @@ setBonusUsed(false);
     </div>
   );
 })}
-<div
-  style={{
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 10,
-    marginBottom: 10
-  }}
->
-  <span
-    style={{
-      fontSize: 15,
-      fontWeight: "bold"
-    }}
-  >
-    🎁 Kod:
-  </span>
 
-  <input
-    placeholder="Wpisz kod"
-    value={discountCode}
-    onChange={(e) => setDiscountCode(e.target.value)}
-    style={{
-      width: 150,
-      padding: "6px 8px",
-      fontSize: 14,
-      borderRadius: 8,
-      border: "1px solid #ccc"
-    }}
-  />
-
-  <button
-    onClick={checkDiscountCode}
-    style={{
-      padding: "6px 10px",
-      fontSize: 14,
-      borderRadius: 8,
-      cursor: "pointer"
-    }}
-  >
-    Aktywuj
-  </button>
-</div>
 <h3>Moc</h3>
 
 {[6, 12, 18, 24, 36].map((v) => {
@@ -721,7 +679,36 @@ setBonusUsed(false);
     </div>
   );
 })}
+<h3>Kod rabatowy</h3>
 
+<div style={{display:"flex",gap:8}}>
+
+<input
+placeholder="Wpisz kod"
+value={discountCode}
+onChange={(e)=>setDiscountCode(e.target.value)}
+style={{flex:1,padding:8}}
+/>
+
+<button onClick={checkDiscountCode}>
+Aktywuj
+</button>
+
+</div>
+
+{bonusMl>0 && !bonusUsed && (
+<div
+style={{
+background:"#dcfce7",
+padding:10,
+borderRadius:8,
+marginTop:10,
+fontWeight:"bold"
+}}
+>
+🎁 Możesz dodać GRATIS {bonusMl}ml
+</div>
+)}
 <h3>Ilość (ml)</h3>
 
 <div
