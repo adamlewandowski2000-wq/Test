@@ -639,7 +639,49 @@ setBonusUsed(false);
     </div>
   );
 })}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 10,
+    marginTop: 10
+  }}
+>
+  <span
+    style={{
+      fontSize: 13,
+      fontWeight: "bold"
+    }}
+  >
+    🎁 Kod:
+  </span>
 
+  <input
+    placeholder="kod"
+    value={discountCode}
+    onChange={(e) => setDiscountCode(e.target.value)}
+    style={{
+      width: 90,
+      padding: "4px 6px",
+      fontSize: 12,
+      borderRadius: 6,
+      border: "1px solid #ccc"
+    }}
+  />
+
+  <button
+    onClick={checkDiscountCode}
+    style={{
+      padding: "4px 8px",
+      fontSize: 12,
+      borderRadius: 6
+    }}
+  >
+    OK
+  </button>
+</div>
 <h3>Moc</h3>
 
 {[6, 12, 18, 24, 36].map((v) => {
@@ -678,36 +720,7 @@ setBonusUsed(false);
     </div>
   );
 })}
-<h3>Kod rabatowy</h3>
 
-<div style={{display:"flex",gap:8}}>
-
-<input
-placeholder="Wpisz kod"
-value={discountCode}
-onChange={(e)=>setDiscountCode(e.target.value)}
-style={{flex:1,padding:8}}
-/>
-
-<button onClick={checkDiscountCode}>
-Aktywuj
-</button>
-
-</div>
-
-{bonusMl>0 && !bonusUsed && (
-<div
-style={{
-background:"#dcfce7",
-padding:10,
-borderRadius:8,
-marginTop:10,
-fontWeight:"bold"
-}}
->
-🎁 Możesz dodać GRATIS {bonusMl}ml
-</div>
-)}
 <h3>Ilość (ml)</h3>
 
 <div
