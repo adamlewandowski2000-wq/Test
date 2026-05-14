@@ -189,25 +189,30 @@ const [lastOrderTotal, setLastOrderTotal] =
 
     return price;
   };
-  const checkDiscountCode=()=>{
+  const checkDiscountCode = () => {
 
-const found=codes.find(
-i=>i.code.toLowerCase()===discountCode.toLowerCase()
-);
+  const found = codes.find(
+    i =>
+      i.code.toLowerCase() ===
+        discountCode.toLowerCase() &&
+      Number(i.active) === 1
+  );
 
-if(!found){
-showMessage("❌ Nieprawidłowy kod","error");
-return;
-}
+  if (!found) {
+    showMessage(
+      "❌ Kod nieaktywny lub nieprawidłowy",
+      "error"
+    );
+    return;
+  }
 
-setBonusMl(found.ml);
+  setBonusMl(found.ml);
 
-showMessage(
-`🎁 Możesz wybrać darmowe ${found.ml}ml`,
-"success"
-);
+  showMessage(
+    `🎁 Aktywowano gratis ${found.ml}ml`,
+    "success"
+  );
 };
-
   // ================= ADD TO CART =================
 
   const addToCart = () => {
@@ -238,20 +243,20 @@ base
 );
 
 const alreadyHasBonus = cart.some(
- item => item.isBonus
+ item => item.price === 0
 );
 
-if(
- bonusMl > 0 &&
- !alreadyHasBonus &&
- Number(ml) === bonusMl
-){
- price=0;
+if (
+  bonusMl > 0 &&
+  !alreadyHasBonus &&
+  Number(ml) === bonusMl
+) {
+  price = 0;
 
- showMessage(
-   `🎁 Dodano gratis ${bonusMl}ml`,
-   "success"
- );
+  showMessage(
+    `🎁 Dodano gratis ${bonusMl}ml`,
+    "success"
+  );
 }
     setCart([
       ...cart,
@@ -309,12 +314,13 @@ const sendOrder = async () => {
 try {
   await fetch(SHEET_API, {
     method: "POST",
-    body: JSON.stringify({
-      name,
-      orderText,
-      total,
-      usedAromas,
-    }),
+  body: JSON.stringify({
+  name,
+  orderText,
+  total,
+  usedAromas,
+  usedCode: discountCode || null
+}),
   });
 
 setLastOrderTotal(total);
