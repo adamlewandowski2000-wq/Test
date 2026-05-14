@@ -813,7 +813,7 @@ setBonusMl(0);
   </button>
 </div>
 
-{bonusMl>0 && !bonusUsed && (
+{bonusMl > 0 && (
 <div
 style={{
 background:"#dcfce7",
