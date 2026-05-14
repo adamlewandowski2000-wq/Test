@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbzzidf4TZnkJ59YeubZQknj_Y3w0blwxNCpXa1LiSe2oEfXYo8CUMnTJXKHUZFuezFR/exec";
+  "https://script.google.com/macros/s/AKfycbzatg-OPtgFxMeg58f3pLXtS0Zkk5FlU8oHsjti-ZT5xFjwIJ0DUhuCZ_onc9qMT_gnKw/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -13,6 +13,10 @@ export default function MiniSklepLiquidow() {
     () => localStorage.getItem("miniSklepName") || ""
   );
 
+  const [discountCode,setDiscountCode]=useState("");
+const [bonusMl,setBonusMl]=useState(0);
+const [bonusUsed,setBonusUsed]=useState(false);
+const [codes,setCodes]=useState([]);
   const [ml, setMl] = useState(
     () => localStorage.getItem("miniSklepMl") || ""
   );
@@ -60,7 +64,10 @@ const [lastOrderTotal, setLastOrderTotal] =
     const fetchInventory = () => {
       fetch(SHEET_API)
         .then((r) => r.json())
-        .then((d) => setServerInventory(d))
+        .then((d)=>{
+ setServerInventory(d.inventory || {});
+ setCodes(d.codes || []);
+})
         .catch(console.error);
     };
 
@@ -183,6 +190,25 @@ const [lastOrderTotal, setLastOrderTotal] =
     return price;
   };
 
+  const checkDiscountCode=()=>{
+
+const found=codes.find(
+i=>i.code.toLowerCase()===discountCode.toLowerCase()
+);
+
+if(!found){
+showMessage("❌ Nieprawidłowy kod","error");
+return;
+}
+
+setBonusMl(found.ml);
+
+showMessage(
+`🎁 Możesz wybrać darmowe ${found.ml}ml`,
+"success"
+);
+};
+
   // ================= ADD TO CART =================
 
   const addToCart = () => {
@@ -206,11 +232,24 @@ const [lastOrderTotal, setLastOrderTotal] =
     if (ml > maxMl)
       return showMessage(`❌ Max ${maxMl}ml`, "error");
 
-    const price = calculatePrice(
-      Number(ml),
-      strength,
-      base
-    );
+  let price = calculatePrice(
+Number(ml),
+strength,
+base
+);
+
+if(
+bonusMl>0 &&
+!bonusUsed &&
+Number(ml)===bonusMl
+){
+price=0;
+setBonusUsed(true);
+showMessage(
+`🎁 Dodano gratis ${bonusMl}ml`,
+"success"
+);
+}
 
     setCart([
       ...cart,
@@ -295,7 +334,9 @@ setShowReferralPopup(true);
   setStrength(null);
   setBase(null);
   setSelectedFlavor(null);
-
+setDiscountCode("");
+setBonusMl(0);
+setBonusUsed(false);
 } catch (err) {
 
   console.error(err);
@@ -421,6 +462,36 @@ setShowReferralPopup(true);
   }}
 />
 
+  <h3>Kod rabatowy</h3>
+
+<div style={{display:"flex",gap:8}}>
+
+<input
+placeholder="Wpisz kod"
+value={discountCode}
+onChange={(e)=>setDiscountCode(e.target.value)}
+style={{flex:1,padding:8}}
+/>
+
+<button onClick={checkDiscountCode}>
+Aktywuj
+</button>
+
+</div>
+
+{bonusMl>0 && !bonusUsed && (
+<div
+style={{
+background:"#dcfce7",
+padding:10,
+borderRadius:8,
+marginTop:10,
+fontWeight:"bold"
+}}
+>
+🎁 Możesz dodać GRATIS {bonusMl}ml
+</div>
+)}
 <h3>Smaki</h3>
 
 {Object.entries(flavorCategories).map(
