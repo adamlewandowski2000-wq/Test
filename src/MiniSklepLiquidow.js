@@ -62,13 +62,23 @@ const [lastOrderTotal, setLastOrderTotal] =
 
   useEffect(() => {
     const fetchInventory = () => {
-      fetch(SHEET_API)
-        .then((r) => r.json())
-        .then((d)=>{
- setServerInventory(d.inventory || {});
- setCodes(d.codes || []);
+
+fetch(SHEET_API)
+.then((r)=>r.json())
+.then((d)=>{
+
+setServerInventory(
+d.inventory || {}
+);
+
+setCodes(
+d.codes || []
+);
+
 })
-        .catch(console.error);
+.catch(console.error);
+
+
     };
 
     fetchInventory();
