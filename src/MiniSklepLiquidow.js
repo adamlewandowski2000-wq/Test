@@ -644,14 +644,14 @@ setBonusUsed(false);
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: 6,
-    marginBottom: 10,
-    marginTop: 10
+    gap: 8,
+    marginTop: 10,
+    marginBottom: 10
   }}
 >
   <span
     style={{
-      fontSize: 13,
+      fontSize: 15,
       fontWeight: "bold"
     }}
   >
@@ -659,14 +659,14 @@ setBonusUsed(false);
   </span>
 
   <input
-    placeholder="kod"
+    placeholder="Wpisz kod"
     value={discountCode}
     onChange={(e) => setDiscountCode(e.target.value)}
     style={{
-      width: 90,
-      padding: "4px 6px",
-      fontSize: 12,
-      borderRadius: 6,
+      width: 150,
+      padding: "6px 8px",
+      fontSize: 14,
+      borderRadius: 8,
       border: "1px solid #ccc"
     }}
   />
@@ -674,12 +674,13 @@ setBonusUsed(false);
   <button
     onClick={checkDiscountCode}
     style={{
-      padding: "4px 8px",
-      fontSize: 12,
-      borderRadius: 6
+      padding: "6px 10px",
+      fontSize: 14,
+      borderRadius: 8,
+      cursor: "pointer"
     }}
   >
-    OK
+    Aktywuj
   </button>
 </div>
 <h3>Moc</h3>
