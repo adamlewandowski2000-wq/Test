@@ -722,59 +722,36 @@ strength===v
 
 <div style={{flex:1,textAlign:"center"}}>
 
-<h3>Kod</h3>
+<h3>Kod rabatowy</h3>
+
+<div style={{display:"flex",gap:8}}>
 
 <input
-placeholder="Kod"
+placeholder="Wpisz kod"
 value={discountCode}
-onChange={(e)=>
-setDiscountCode(e.target.value)
-}
-style={{
-width:"100%",
-padding:8,
-borderRadius:8,
-border:"1px solid #ccc"
-}}
+onChange={(e)=>setDiscountCode(e.target.value)}
+style={{flex:1,padding:8}}
 />
 
-<button
-onClick={checkDiscountCode}
-style={{
-marginTop:6,
-width:"100%",
-padding:8,
-border:"none",
-borderRadius:8,
-background:"#2563eb",
-color:"#fff",
-fontWeight:"bold"
-}}
->
+<button onClick={checkDiscountCode}>
 Aktywuj
 </button>
 
-{bonusMl>0 && !bonusUsed && (
+</div>
 
+{bonusMl>0 && !bonusUsed && (
 <div
 style={{
 background:"#dcfce7",
-marginTop:8,
-padding:8,
+padding:10,
 borderRadius:8,
-fontSize:13,
+marginTop:10,
 fontWeight:"bold"
 }}
 >
-🎁 GRATIS {bonusMl}ml
+🎁 Możesz dodać GRATIS {bonusMl}ml
 </div>
-
 )}
-
-</div>
-
-</div>
-```
 
 
 <h3>Moc</h3>
@@ -815,7 +792,72 @@ fontWeight:"bold"
     </div>
   );
 })}
+<div
+style={{
+display:"flex",
+justifyContent:"center",
+marginTop:15,
+marginBottom:15
+}}
+>
 
+<div
+style={{
+width:220,
+textAlign:"center"
+}}
+>
+
+<h3>Kod rabatowy</h3>
+
+<input
+placeholder="Wpisz kod"
+value={discountCode}
+onChange={(e)=>setDiscountCode(e.target.value)}
+style={{
+width:"100%",
+padding:10,
+borderRadius:8,
+border:"1px solid #ccc",
+marginBottom:8,
+textAlign:"center"
+}}
+/>
+
+<button
+onClick={checkDiscountCode}
+style={{
+width:"100%",
+padding:10,
+border:"none",
+borderRadius:8,
+background:"#2563eb",
+color:"#fff",
+fontWeight:"bold"
+}}
+>
+Aktywuj
+</button>
+
+{bonusMl>0 && !bonusUsed && (
+
+<div
+style={{
+background:"#dcfce7",
+padding:10,
+borderRadius:8,
+marginTop:10,
+fontWeight:"bold"
+}}
+>
+🎁 GRATIS {bonusMl}ml
+</div>
+
+)}
+
+</div>
+
+</div>
 <h3>Ilość (ml)</h3>
 
 <div
