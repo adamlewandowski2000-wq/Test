@@ -472,36 +472,7 @@ setBonusUsed(false);
   }}
 />
 
-  <h3>Kod rabatowy</h3>
-
-<div style={{display:"flex",gap:8}}>
-
-<input
-placeholder="Wpisz kod"
-value={discountCode}
-onChange={(e)=>setDiscountCode(e.target.value)}
-style={{flex:1,padding:8}}
-/>
-
-<button onClick={checkDiscountCode}>
-Aktywuj
-</button>
-
-</div>
-
-{bonusMl>0 && !bonusUsed && (
-<div
-style={{
-background:"#dcfce7",
-padding:10,
-borderRadius:8,
-marginTop:10,
-fontWeight:"bold"
-}}
->
-🎁 Możesz dodać GRATIS {bonusMl}ml
-</div>
-)}
+ 
 <h3>Smaki</h3>
 
 {Object.entries(flavorCategories).map(
@@ -637,48 +608,174 @@ fontWeight:"bold"
   }
 )}
 
+```jsx
+<div
+style={{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"flex-start",
+gap:15,
+marginTop:15,
+marginBottom:15
+}}
+>
+
+<div style={{flex:1,textAlign:"center"}}>
 <h3>Baza</h3>
 
-{["Nikotyna", "Sól"].map((v) => {
-  const disabled =
-    v === "Nikotyna" &&
-    strength === 36;
+{["Nikotyna","Sól"].map((v)=>{
 
-  return (
-    <div
-      key={v}
-      onClick={() =>
-        !disabled &&
-        setBase(v.toLowerCase())
-      }
-      style={{
-        display: "inline-block",
-        width: 70,
-        height: 30,
-        marginRight: 6,
-        border: "1px solid #000",
-        borderRadius: 4,
-        textAlign: "center",
-        lineHeight: "30px",
-        cursor: disabled
-          ? "not-allowed"
-          : "pointer",
-        background:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "green"
-            : "#eee",
-        color:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "#fff"
-            : "#000",
-      }}
-    >
-      {v}
-    </div>
-  );
+const disabled=
+v==="Nikotyna" &&
+strength===36;
+
+return(
+
+<div
+key={v}
+onClick={()=>
+!disabled &&
+setBase(v.toLowerCase())
+}
+style={{
+display:"inline-block",
+width:80,
+height:35,
+marginRight:6,
+marginBottom:6,
+border:"1px solid #000",
+borderRadius:8,
+textAlign:"center",
+lineHeight:"35px",
+cursor:disabled
+?"not-allowed"
+:"pointer",
+background:
+base?.toLowerCase()===
+v.toLowerCase()
+?"green"
+:"#eee",
+color:
+base?.toLowerCase()===
+v.toLowerCase()
+?"#fff"
+:"#000"
+}}
+>
+{v}
+</div>
+
+);
+
 })}
+</div>
+
+
+<div style={{flex:1,textAlign:"center"}}>
+<h3>Moc</h3>
+
+{[6,12,18,24,36].map((v)=>{
+
+const disabled=
+base==="nikotyna" &&
+v===36;
+
+return(
+
+<div
+key={v}
+onClick={()=>
+!disabled &&
+setStrength(v)
+}
+style={{
+display:"inline-block",
+width:50,
+height:35,
+marginRight:6,
+marginBottom:6,
+border:"1px solid #000",
+borderRadius:8,
+textAlign:"center",
+lineHeight:"35px",
+cursor:disabled
+?"not-allowed"
+:"pointer",
+background:
+strength===v
+?"green"
+:"#eee",
+color:
+strength===v
+?"#fff"
+:"#000"
+}}
+>
+{v}mg
+</div>
+
+);
+
+})}
+</div>
+
+
+<div style={{flex:1,textAlign:"center"}}>
+
+<h3>Kod</h3>
+
+<input
+placeholder="Kod"
+value={discountCode}
+onChange={(e)=>
+setDiscountCode(e.target.value)
+}
+style={{
+width:"100%",
+padding:8,
+borderRadius:8,
+border:"1px solid #ccc"
+}}
+/>
+
+<button
+onClick={checkDiscountCode}
+style={{
+marginTop:6,
+width:"100%",
+padding:8,
+border:"none",
+borderRadius:8,
+background:"#2563eb",
+color:"#fff",
+fontWeight:"bold"
+}}
+>
+Aktywuj
+</button>
+
+{bonusMl>0 && !bonusUsed && (
+
+<div
+style={{
+background:"#dcfce7",
+marginTop:8,
+padding:8,
+borderRadius:8,
+fontSize:13,
+fontWeight:"bold"
+}}
+>
+🎁 GRATIS {bonusMl}ml
+</div>
+
+)}
+
+</div>
+
+</div>
+```
+
 
 <h3>Moc</h3>
 
