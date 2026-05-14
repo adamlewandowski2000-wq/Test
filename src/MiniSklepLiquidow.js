@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbykZmHh7HEaxeRBHgEW_vXU4JEL0hHjN7NKM22gpvkrIS-Al4VVbdV9Y1mLtJA8mP0Tbg/exec";
+  "https://script.google.com/macros/s/AKfycbzzidf4TZnkJ59YeubZQknj_Y3w0blwxNCpXa1LiSe2oEfXYo8CUMnTJXKHUZFuezFR/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -62,23 +62,13 @@ const [lastOrderTotal, setLastOrderTotal] =
 
   useEffect(() => {
     const fetchInventory = () => {
-
-fetch(SHEET_API)
-.then((r)=>r.json())
-.then((d)=>{
-
-setServerInventory(
-d.inventory || {}
-);
-
-setCodes(
-d.codes || []
-);
-
+      fetch(SHEET_API)
+        .then((r) => r.json())
+        .then((d)=>{
+ setServerInventory(d.inventory || {});
+ setCodes(d.codes || []);
 })
-.catch(console.error);
-
-
+        .catch(console.error);
     };
 
     fetchInventory();
@@ -199,7 +189,6 @@ d.codes || []
 
     return price;
   };
-
   const checkDiscountCode=()=>{
 
 const found=codes.find(
@@ -242,7 +231,7 @@ showMessage(
     if (ml > maxMl)
       return showMessage(`❌ Max ${maxMl}ml`, "error");
 
-  let price = calculatePrice(
+    let price = calculatePrice(
 Number(ml),
 strength,
 base
@@ -344,9 +333,10 @@ setShowReferralPopup(true);
   setStrength(null);
   setBase(null);
   setSelectedFlavor(null);
-setDiscountCode("");
+  setDiscountCode("");
 setBonusMl(0);
 setBonusUsed(false);
+
 } catch (err) {
 
   console.error(err);
@@ -472,7 +462,6 @@ setBonusUsed(false);
   }}
 />
 
- 
 <h3>Smaki</h3>
 
 {Object.entries(flavorCategories).map(
@@ -608,120 +597,48 @@ setBonusUsed(false);
   }
 )}
 
-```jsx
-<div
-style={{
-display:"flex",
-justifyContent:"space-between",
-alignItems:"flex-start",
-gap:15,
-marginTop:15,
-marginBottom:15
-}}
->
-
-<div style={{flex:1,textAlign:"center"}}>
 <h3>Baza</h3>
 
-{["Nikotyna","Sól"].map((v)=>{
+{["Nikotyna", "Sól"].map((v) => {
+  const disabled =
+    v === "Nikotyna" &&
+    strength === 36;
 
-const disabled=
-v==="Nikotyna" &&
-strength===36;
-
-return(
-
-<div
-key={v}
-onClick={()=>
-!disabled &&
-setBase(v.toLowerCase())
-}
-style={{
-display:"inline-block",
-width:80,
-height:35,
-marginRight:6,
-marginBottom:6,
-border:"1px solid #000",
-borderRadius:8,
-textAlign:"center",
-lineHeight:"35px",
-cursor:disabled
-?"not-allowed"
-:"pointer",
-background:
-base?.toLowerCase()===
-v.toLowerCase()
-?"green"
-:"#eee",
-color:
-base?.toLowerCase()===
-v.toLowerCase()
-?"#fff"
-:"#000"
-}}
->
-{v}
-</div>
-
-);
-
+  return (
+    <div
+      key={v}
+      onClick={() =>
+        !disabled &&
+        setBase(v.toLowerCase())
+      }
+      style={{
+        display: "inline-block",
+        width: 70,
+        height: 30,
+        marginRight: 6,
+        border: "1px solid #000",
+        borderRadius: 4,
+        textAlign: "center",
+        lineHeight: "30px",
+        cursor: disabled
+          ? "not-allowed"
+          : "pointer",
+        background:
+          base?.toLowerCase() ===
+          v.toLowerCase()
+            ? "green"
+            : "#eee",
+        color:
+          base?.toLowerCase() ===
+          v.toLowerCase()
+            ? "#fff"
+            : "#000",
+      }}
+    >
+      {v}
+    </div>
+  );
 })}
-</div>
-
-
-<div style={{flex:1,textAlign:"center"}}>
-<h3>Moc</h3>
-
-{[6,12,18,24,36].map((v)=>{
-
-const disabled=
-base==="nikotyna" &&
-v===36;
-
-return(
-
-<div
-key={v}
-onClick={()=>
-!disabled &&
-setStrength(v)
-}
-style={{
-display:"inline-block",
-width:50,
-height:35,
-marginRight:6,
-marginBottom:6,
-border:"1px solid #000",
-borderRadius:8,
-textAlign:"center",
-lineHeight:"35px",
-cursor:disabled
-?"not-allowed"
-:"pointer",
-background:
-strength===v
-?"green"
-:"#eee",
-color:
-strength===v
-?"#fff"
-:"#000"
-}}
->
-{v}mg
-</div>
-
-);
-
-})}
-</div>
-
-
-<div style={{flex:1,textAlign:"center"}}>
-
 <h3>Kod rabatowy</h3>
 
 <div style={{display:"flex",gap:8}}>
@@ -752,8 +669,6 @@ fontWeight:"bold"
 🎁 Możesz dodać GRATIS {bonusMl}ml
 </div>
 )}
-
-
 <h3>Moc</h3>
 
 {[6, 12, 18, 24, 36].map((v) => {
@@ -792,72 +707,7 @@ fontWeight:"bold"
     </div>
   );
 })}
-<div
-style={{
-display:"flex",
-justifyContent:"center",
-marginTop:15,
-marginBottom:15
-}}
->
 
-<div
-style={{
-width:220,
-textAlign:"center"
-}}
->
-
-<h3>Kod rabatowy</h3>
-
-<input
-placeholder="Wpisz kod"
-value={discountCode}
-onChange={(e)=>setDiscountCode(e.target.value)}
-style={{
-width:"100%",
-padding:10,
-borderRadius:8,
-border:"1px solid #ccc",
-marginBottom:8,
-textAlign:"center"
-}}
-/>
-
-<button
-onClick={checkDiscountCode}
-style={{
-width:"100%",
-padding:10,
-border:"none",
-borderRadius:8,
-background:"#2563eb",
-color:"#fff",
-fontWeight:"bold"
-}}
->
-Aktywuj
-</button>
-
-{bonusMl>0 && !bonusUsed && (
-
-<div
-style={{
-background:"#dcfce7",
-padding:10,
-borderRadius:8,
-marginTop:10,
-fontWeight:"bold"
-}}
->
-🎁 GRATIS {bonusMl}ml
-</div>
-
-)}
-
-</div>
-
-</div>
 <h3>Ilość (ml)</h3>
 
 <div
