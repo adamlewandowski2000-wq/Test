@@ -16,7 +16,6 @@ export default function MiniSklepLiquidow() {
 
   const [discountCode,setDiscountCode]=useState("");
 const [bonusMl,setBonusMl]=useState(0);
-const [bonusUsed,setBonusUsed]=useState(false);
 const [codes,setCodes]=useState([]);
   const [ml, setMl] = useState(
     () => localStorage.getItem("miniSklepMl") || ""
@@ -238,28 +237,33 @@ strength,
 base
 );
 
-if(
-bonusMl>0 &&
-!bonusUsed &&
-Number(ml)===bonusMl
-){
-price=0;
-setBonusUsed(true);
-showMessage(
-`🎁 Dodano gratis ${bonusMl}ml`,
-"success"
+const alreadyHasBonus = cart.some(
+ item => item.isBonus
 );
-}
 
+if(
+ bonusMl > 0 &&
+ !alreadyHasBonus &&
+ Number(ml) === bonusMl
+){
+ price=0;
+
+ showMessage(
+   `🎁 Dodano gratis ${bonusMl}ml`,
+   "success"
+ );
+}
     setCart([
       ...cart,
-      {
-        flavor: selectedFlavor,
-        ml: Number(ml),
-        strength,
-        base,
-        price,
-      },
+     {
+ flavor:selectedFlavor,
+ ml:Number(ml),
+ strength,
+ base,
+ price,
+ isBonus:
+   price===0
+}
     ]);
 
     setMl("");
@@ -336,7 +340,7 @@ setShowReferralPopup(true);
   setSelectedFlavor(null);
   setDiscountCode("");
 setBonusMl(0);
-setBonusUsed(false);
+
 
 } catch (err) {
 
@@ -773,19 +777,34 @@ setBonusUsed(false);
 )}
 <h3>Kod rabatowy</h3>
 
-<div style={{display:"flex",gap:8}}>
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  }}
+>
+  <input
+    placeholder="Kod"
+    value={discountCode}
+    onChange={(e) =>
+      setDiscountCode(e.target.value)
+    }
+    style={{
+      width: "30%",
+      padding: "4px 6px",
+      fontSize: 18,
+    }}
+  />
 
-<input
-placeholder="Wpisz kod"
-value={discountCode}
-onChange={(e)=>setDiscountCode(e.target.value)}
-style={{flex:1,padding:8}}
-/>
-
-<button onClick={checkDiscountCode}>
-Aktywuj
-</button>
-
+  <button
+    onClick={checkDiscountCode}
+    style={{
+      padding: "8px 14px"
+    }}
+  >
+    Aktywuj
+  </button>
 </div>
 
 {bonusMl>0 && !bonusUsed && (
@@ -808,9 +827,22 @@ fontWeight:"bold"
     key={idx}
     style={{ marginBottom: 4 }}
   >
-    {i.flavor.id}/{i.ml}ml/
-    {i.strength}mg/{i.base} —{" "}
-    {i.price.toFixed(2)}zł
+{i.flavor.id}/{i.ml}ml/
+{i.strength}mg/{i.base}
+
+— {i.price.toFixed(2)}zł
+
+{i.isBonus && (
+ <span
+   style={{
+      color:"#16a34a",
+      fontWeight:"bold",
+      marginLeft:6
+   }}
+ >
+   🎁 GRATIS
+ </span>
+)}
 
     <button
       onClick={() => removeItem(idx)}
