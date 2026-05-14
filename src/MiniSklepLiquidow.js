@@ -679,36 +679,7 @@ setBonusUsed(false);
     </div>
   );
 })}
-<h3>Kod rabatowy</h3>
 
-<div style={{display:"flex",gap:8}}>
-
-<input
-placeholder="Wpisz kod"
-value={discountCode}
-onChange={(e)=>setDiscountCode(e.target.value)}
-style={{flex:1,padding:8}}
-/>
-
-<button onClick={checkDiscountCode}>
-Aktywuj
-</button>
-
-</div>
-
-{bonusMl>0 && !bonusUsed && (
-<div
-style={{
-background:"#dcfce7",
-padding:10,
-borderRadius:8,
-marginTop:10,
-fontWeight:"bold"
-}}
->
-🎁 Możesz dodać GRATIS {bonusMl}ml
-</div>
-)}
 <h3>Ilość (ml)</h3>
 
 <div
@@ -800,7 +771,36 @@ fontWeight:"bold"
     {message}
   </div>
 )}
+<h3>Kod rabatowy</h3>
 
+<div style={{display:"flex",gap:8}}>
+
+<input
+placeholder="Wpisz kod"
+value={discountCode}
+onChange={(e)=>setDiscountCode(e.target.value)}
+style={{flex:1,padding:8}}
+/>
+
+<button onClick={checkDiscountCode}>
+Aktywuj
+</button>
+
+</div>
+
+{bonusMl>0 && !bonusUsed && (
+<div
+style={{
+background:"#dcfce7",
+padding:10,
+borderRadius:8,
+marginTop:10,
+fontWeight:"bold"
+}}
+>
+🎁 Możesz dodać GRATIS {bonusMl}ml
+</div>
+)}
 <h3>Koszyk</h3>
 
 {cart.map((i, idx) => (
