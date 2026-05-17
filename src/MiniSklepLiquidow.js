@@ -270,6 +270,8 @@ useEffect(() => {
     const num30 = Math.floor(remainder / 30);
 
     if (num30 > 0) {
+
+  
       const price30 = (() => {
         if (baseType === "nikotyna") {
           if ([6, 12].includes(strength)) return 32.5;
@@ -824,9 +826,9 @@ setBonusMl(0);
 
 <h3>Moc</h3>
 
-{[6, 12, 18, 24, 36].map((v) => {
+{[6,12,18,24,36].map(v=>{
   const disabled =
-    base === "nikotyna" && v === 36;
+    base==="nikotyna" && v===36;
 
   return (
     <div
@@ -835,25 +837,43 @@ setBonusMl(0);
         !disabled && setStrength(v)
       }
       style={{
-        display: "inline-block",
-        width: 40,
-        height: 30,
-        marginRight: 6,
-        border: "1px solid #000",
-        borderRadius: 4,
-        textAlign: "center",
-        lineHeight: "30px",
-        cursor: disabled
+        display:"inline-block",
+        width:40,
+        height:30,
+        marginRight:6,
+        border:"1px solid #000",
+        borderRadius:4,
+        textAlign:"center",
+        lineHeight:"30px",
+
+        cursor:
+          disabled
           ? "not-allowed"
           : "pointer",
+
+        opacity:
+          disabled ? 0.35 : 1,
+
+        filter:
+          disabled
+          ? "grayscale(100%)"
+          : "none",
+
         background:
-          strength === v
+          strength===v
             ? "green"
+            : disabled
+            ? "#d1d5db"
             : "#eee",
+
         color:
-          strength === v
+          strength===v
             ? "#fff"
+            : disabled
+            ? "#6b7280"
             : "#000",
+
+        transition:"all .2s"
       }}
     >
       {v}mg
