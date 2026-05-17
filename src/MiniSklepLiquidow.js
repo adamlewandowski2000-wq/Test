@@ -480,13 +480,23 @@ name,
 orderText,
 total,
 usedAromas,
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+
 usedCode:
-codeActivated
- ? discountCode
- : null
+cart.some(
+i=>i.isBonus
+)
+? discountCode
+: null
+
 })
 });
-
 },0);
 
 
