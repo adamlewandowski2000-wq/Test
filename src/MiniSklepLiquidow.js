@@ -414,23 +414,48 @@ try {
 
 setOrderSent(true);
 
-// natychmiast zatrzymaj dalszy zapis do localStorage
 localStorage.setItem(
  "miniSklepOrderSent",
  "1"
 );
 
+// popup od razu
+setLastOrderTotal(total);
 
-await fetch(SHEET_API,{
-    method: "POST",
-  body: JSON.stringify({
-  name,
-  orderText,
-  total,
-  usedAromas,
-  usedCode: discountCode || null
-}),
-  });
+setShowReferralPopup(true);
+
+showMessage(
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
+);
+
+// czyść od razu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
+
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
+setBonusMl(0);
+
+// dopiero teraz wyślij w tle
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:discountCode||null
+});
 
 setLastOrderTotal(total);
 
