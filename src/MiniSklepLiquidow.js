@@ -448,6 +448,7 @@ setBase(null);
 setSelectedFlavor(null);
 setDiscountCode("");
 setBonusMl(0);
+setCodeActivated(false);
 
 fetch(SHEET_API,{
 method:"POST",
