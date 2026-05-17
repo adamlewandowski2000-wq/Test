@@ -477,7 +477,6 @@ localStorage.removeItem("miniSklepCode");
 
 await fetch(SHEET_API,{
 method:"POST",
-keepalive:true,
 headers:{
 "Content-Type":"application/json"
 },
