@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
@@ -399,16 +397,11 @@ setBonusMl(0);
 
 setCodeActivated(false);
 
-setDiscountCode("");
-
-localStorage.removeItem(
-"miniSklepCode"
-);
-
 showMessage(
 "ℹ️ Usunięto bonus — kod ponownie aktywny",
 "info"
 );
+
 }
 
 };
@@ -450,27 +443,12 @@ try {
 setShowReferralPopup(true);
 setLastOrderTotal(total);
 
-const orderData={
- name,
- orderText,
- total,
- usedAromas,
- usedCode:
-  codeActivated
-   ? discountCode
-   : null
-};
+setTimeout(() => {
 
-await fetch(SHEET_API,{
- method:"POST",
- headers:{
-   "Content-Type":"application/json"
- },
- body:JSON.stringify(orderData)
-});
-
-// dopiero po wysłaniu:
-setOrderSent(true);
+showMessage(
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
+);
 
 localStorage.setItem(
  "miniSklepOrderSent",
@@ -490,28 +468,67 @@ setMl("");
 setStrength(null);
 setBase(null);
 setSelectedFlavor(null);
-setDiscountCode("");
 setBonusMl(0);
 setCodeActivated(false);
 
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:
+codeActivated
+ ? discountCode
+ : null
+})
+});
+
+},0);
+
+
 showMessage(
-"✅ Zamówienie wysłane!",
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
 "success"
 );
-}
-catch(err){
 
-console.error(err);
 
-showMessage(
-"❌ Problem z wysyłką",
-"error"
-);
+// usuń tylko dane sklepu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-}
-finally{
 
- setIsSending(false);
+
+// wyczyść React state
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
+setBonusMl(0);
+
+
+} catch (err) {
+
+  console.error(err);
+
+  showMessage(
+    "❌ Problem z wysyłką",
+    "error"
+  );
+
+}finally {
+
+  setOrderSent(false);
+
+  setIsSending(false);
 
 }
 };
@@ -882,6 +899,7 @@ transition:"all .2s"
     </div>
   );
 })}
+
 
 <h3>Ilość (ml)</h3>
 
@@ -1304,7 +1322,7 @@ fontWeight:"bold"
         .successPulse {
           animation: pulse 1s infinite;
         }
-      `}</style>
+     }</style>
     </div>
   );
 }
