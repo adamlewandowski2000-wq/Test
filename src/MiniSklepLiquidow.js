@@ -412,24 +412,21 @@ const sendOrder = async () => {
 
 try {
 
-setOrderSent(true);
-
-localStorage.setItem(
- "miniSklepOrderSent",
- "1"
-);
-
-// popup od razu
+setShowReferralPopup(true);
 setLastOrderTotal(total);
 
-setShowReferralPopup(true);
+setTimeout(() => {
 
 showMessage(
 "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
 "success"
 );
 
-// czyść od razu
+localStorage.setItem(
+ "miniSklepOrderSent",
+ "1"
+);
+
 localStorage.removeItem("miniSklepCart");
 localStorage.removeItem("miniSklepName");
 localStorage.removeItem("miniSklepMl");
@@ -446,7 +443,6 @@ setSelectedFlavor(null);
 setDiscountCode("");
 setBonusMl(0);
 
-// dopiero teraz wyślij w tle
 fetch(SHEET_API,{
 method:"POST",
 body:JSON.stringify({
@@ -454,12 +450,12 @@ name,
 orderText,
 total,
 usedAromas,
-usedCode:discountCode||null
+usedCode:discountCode || null
+})
 });
 
-setLastOrderTotal(total);
+},0);
 
-setShowReferralPopup(true);
 
 showMessage(
 "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
