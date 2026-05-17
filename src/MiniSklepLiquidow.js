@@ -528,8 +528,6 @@ setBonusMl(0);
 
 }finally {
 
-  setOrderSent(false);
-
   setIsSending(false);
 
 }
