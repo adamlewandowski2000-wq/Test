@@ -270,6 +270,8 @@ useEffect(() => {
     const num30 = Math.floor(remainder / 30);
 
     if (num30 > 0) {
+
+  
       const price30 = (() => {
         if (baseType === "nikotyna") {
           if ([6, 12].includes(strength)) return 32.5;
@@ -443,17 +445,23 @@ try {
 setShowReferralPopup(true);
 setLastOrderTotal(total);
 
-setTimeout(() => {
-
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
-);
+setOrderSent(true);
 
 localStorage.setItem(
  "miniSklepOrderSent",
  "1"
 );
+
+// czyść natychmiast UI
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
+setBonusMl(0);
+setCodeActivated(false);
 
 localStorage.removeItem("miniSklepCart");
 localStorage.removeItem("miniSklepName");
@@ -462,15 +470,7 @@ localStorage.removeItem("miniSklepStrength");
 localStorage.removeItem("miniSklepBase");
 localStorage.removeItem("miniSklepCode");
 
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setBonusMl(0);
-setCodeActivated(false);
-
+// wyślij w tle
 fetch(SHEET_API,{
 method:"POST",
 body:JSON.stringify({
@@ -480,55 +480,30 @@ total,
 usedAromas,
 usedCode:
 codeActivated
- ? discountCode
- : null
+? discountCode
+: null
 })
 });
 
-},0);
-
-
 showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"✅ Zamówienie wysłane!",
 "success"
 );
 
+}
+catch(err){
 
-// usuń tylko dane sklepu
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
+console.error(err);
 
+showMessage(
+"❌ Problem z wysyłką",
+"error"
+);
 
+}
+finally{
 
-// wyczyść React state
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setDiscountCode("");
-setBonusMl(0);
-
-
-} catch (err) {
-
-  console.error(err);
-
-  showMessage(
-    "❌ Problem z wysyłką",
-    "error"
-  );
-
-}finally {
-
-  setOrderSent(false);
-
-  setIsSending(false);
+setIsSending(false);
 
 }
 };
@@ -781,52 +756,73 @@ setBonusMl(0);
 
 <h3>Baza</h3>
 
-{["Nikotyna", "Sól"].map((v) => {
-  const disabled =
-    v === "Nikotyna" &&
-    strength === 36;
+{["Nikotyna","Sól"].map((v)=>{
 
-  return (
-    <div
-      key={v}
-      onClick={() =>
-        !disabled &&
-        setBase(v.toLowerCase())
-      }
-      style={{
-        display: "inline-block",
-        width: 70,
-        height: 30,
-        marginRight: 6,
-        border: "1px solid #000",
-        borderRadius: 4,
-        textAlign: "center",
-        lineHeight: "30px",
-        cursor: disabled
-          ? "not-allowed"
-          : "pointer",
-        background:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "green"
-            : "#eee",
-        color:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "#fff"
-            : "#000",
-      }}
-    >
-      {v}
-    </div>
-  );
+const disabled =
+  v==="Nikotyna" &&
+  strength===36;
+
+return(
+<div
+key={v}
+onClick={()=>
+ !disabled &&
+ setBase(v.toLowerCase())
+}
+
+style={{
+display:"inline-block",
+width:70,
+height:30,
+marginRight:6,
+border:"1px solid #000",
+borderRadius:4,
+textAlign:"center",
+lineHeight:"30px",
+
+cursor:
+disabled
+? "not-allowed"
+: "pointer",
+
+opacity:
+disabled
+? 0.35
+: 1,
+
+filter:
+disabled
+? "grayscale(100%)"
+: "none",
+
+background:
+base?.toLowerCase()===
+v.toLowerCase()
+? "green"
+: disabled
+? "#d1d5db"
+: "#eee",
+
+color:
+base?.toLowerCase()===
+v.toLowerCase()
+? "#fff"
+: disabled
+? "#6b7280"
+: "#000",
+
+transition:"all .2s"
+}}
+>
+{v}
+</div>
+);
 })}
-
 <h3>Moc</h3>
 
-{[6, 12, 18, 24, 36].map((v) => {
+{[6,12,18,24,36].map(v=>{
   const disabled =
-    base === "nikotyna" && v === 36;
+    base==="nikotyna" && v===36;
 
   return (
     <div
@@ -835,25 +831,43 @@ setBonusMl(0);
         !disabled && setStrength(v)
       }
       style={{
-        display: "inline-block",
-        width: 40,
-        height: 30,
-        marginRight: 6,
-        border: "1px solid #000",
-        borderRadius: 4,
-        textAlign: "center",
-        lineHeight: "30px",
-        cursor: disabled
+        display:"inline-block",
+        width:40,
+        height:30,
+        marginRight:6,
+        border:"1px solid #000",
+        borderRadius:4,
+        textAlign:"center",
+        lineHeight:"30px",
+
+        cursor:
+          disabled
           ? "not-allowed"
           : "pointer",
+
+        opacity:
+          disabled ? 0.35 : 1,
+
+        filter:
+          disabled
+          ? "grayscale(100%)"
+          : "none",
+
         background:
-          strength === v
+          strength===v
             ? "green"
+            : disabled
+            ? "#d1d5db"
             : "#eee",
+
         color:
-          strength === v
+          strength===v
             ? "#fff"
+            : disabled
+            ? "#6b7280"
             : "#000",
+
+        transition:"all .2s"
       }}
     >
       {v}mg
