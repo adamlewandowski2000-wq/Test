@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbza9BtjXCr3dZ_U16HWzHZQGDNwfTXSHIXD3q3DeeU-cYQPbGhComaItPhbQIpsz0S8qQ/exec";
+  "https://script.google.com/macros/s/AKfycbyEEJrQN0Nf4UkW0jAbi23Pxvid1p8Aaf1OneJ-PyE_1YkIXjnWTjnlz-SKIC58uSY8/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -196,9 +196,16 @@ useEffect(() => {
    setStrength(null);
    setBase(null);
 
-   // TO ZOSTAW NA SAMYM KOŃCU:
+   setSelectedFlavor(null);
+
+   setDiscountCode("");
+
+   setBonusMl(0);
+
+   setCodeActivated(false);
+
    localStorage.removeItem(
-     "miniSklepOrderSent"
+    "miniSklepOrderSent"
    );
  }
 
@@ -399,6 +406,8 @@ setBonusMl(0);
 
 setCodeActivated(false);
 
+setDiscountCode("");
+
 showMessage(
 "ℹ️ Usunięto bonus — kod ponownie aktywny",
 "info"
@@ -411,58 +420,82 @@ showMessage(
   // ================= SEND =================
 
 const sendOrder = async () => {
-  if (!name)
-    return showMessage("❌ Podaj imię", "error");
 
-  if (cart.length === 0)
-    return showMessage("❌ Koszyk pusty", "error");
+if(!name)
+return showMessage(
+"❌ Podaj imię",
+"error"
+);
 
-  if (isSending) return;
+if(cart.length===0)
+return showMessage(
+"❌ Koszyk pusty",
+"error"
+);
 
-  setIsSending(true);
+if(isSending) return;
 
-  const orderText = cart
-    .map(
-      (i) =>
-        `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
-    )
-    .join("\n");
+setIsSending(true);
 
-  const total = cart.reduce(
-    (s, i) => s + i.price,
-    0
-  );
+const orderText = cart
+.map(
+i =>
+`${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
+)
+.join("\n");
 
-  const usedAromas = {};
+const total =
+cart.reduce(
+(s,i)=>s+i.price,
+0
+);
 
-  cart.forEach((i) => {
-    usedAromas[i.flavor.id] =
-      (usedAromas[i.flavor.id] || 0) + i.ml / 10;
-  });
+const usedAromas={};
 
-try {
+cart.forEach(i=>{
 
-setShowReferralPopup(true);
-setLastOrderTotal(total);
+usedAromas[i.flavor.id]=
+(usedAromas[i.flavor.id]||0)
++i.ml/10;
+
+});
+
+try{
 
 setOrderSent(true);
 
 localStorage.setItem(
- "miniSklepOrderSent",
- "1"
+"miniSklepOrderSent",
+"1"
 );
 
-// czyść natychmiast UI
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setDiscountCode("");
-setBonusMl(0);
-setCodeActivated(false);
+setShowReferralPopup(true);
 
+setLastOrderTotal(total);
+
+showMessage(
+"✅ Zamówienie wysłane!",
+"success"
+);
+
+
+
+await fetch(
+SHEET_API,
+{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:
+codeActivated
+? discountCode
+: null
+})
+}
+);
 localStorage.removeItem("miniSklepCart");
 localStorage.removeItem("miniSklepName");
 localStorage.removeItem("miniSklepMl");
@@ -470,31 +503,20 @@ localStorage.removeItem("miniSklepStrength");
 localStorage.removeItem("miniSklepBase");
 localStorage.removeItem("miniSklepCode");
 
-await fetch(SHEET_API,{
- method:"POST",
- keepalive:true,
- headers:{
-   "Content-Type":"application/json"
- },
- body:JSON.stringify({
-   name,
-   orderText,
-   total,
-   usedAromas,
-   usedCode:
-     codeActivated
-     ? discountCode
-     : null
- })
-});
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
 
-showMessage(
-"✅ Zamówienie wysłane!",
-"success"
-);
+setSelectedFlavor(null);
 
-}
-catch(err){
+setDiscountCode("");
+
+setBonusMl(0);
+
+setCodeActivated(false);
+}catch(err){
 
 console.error(err);
 
@@ -503,17 +525,14 @@ showMessage(
 "error"
 );
 
-}
-finally{
+} finally {
+
+setOrderSent(false);
 
 setIsSending(false);
 
 }
 };
-  const total = cart.reduce(
-    (s, i) => s + i.price,
-    0
-  );
 
   // ================= CATEGORY =================
 
@@ -973,32 +992,56 @@ transition:"all .2s"
 
 <div
   style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
+    display:"flex",
+    alignItems:"center",
+    gap:12,
   }}
 >
-  <input
-    placeholder="Kod"
-    value={discountCode}
-    onChange={(e) =>
-      setDiscountCode(e.target.value)
-    }
-    style={{
-      width: "30%",
-      padding: "4px 6px",
-      fontSize: 18,
-    }}
-  />
 
-  <button
-    onClick={checkDiscountCode}
-    style={{
-      padding: "8px 14px"
-    }}
-  >
-    Aktywuj
-  </button>
+<input
+placeholder="Kod"
+value={discountCode}
+disabled={codeActivated}
+onChange={(e)=>
+setDiscountCode(
+e.target.value
+)}
+style={{
+width:"30%",
+padding:"4px 6px",
+fontSize:18,
+
+opacity:
+codeActivated
+? 0.6
+: 1
+}}
+/>
+
+<button
+disabled={codeActivated}
+onClick={checkDiscountCode}
+style={{
+padding:"8px 14px",
+
+opacity:
+codeActivated
+? .6
+: 1,
+
+cursor:
+codeActivated
+? "not-allowed"
+: "pointer"
+}}
+>
+{
+codeActivated
+? "✅ Aktywny"
+: "Aktywuj"
+}
+</button>
+
 </div>
 
 {bonusMl > 0 && (
