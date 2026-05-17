@@ -381,8 +381,30 @@ if (
     showMessage("✅ Dodano do koszyka", "success");
   };
 
-  const removeItem = (idx) =>
-    setCart(cart.filter((_, i) => i !== idx));
+  const removeItem = (idx) => {
+
+const removedItem = cart[idx];
+
+const newCart =
+cart.filter((_,i)=>i!==idx);
+
+setCart(newCart);
+
+// jeśli usunięto gratis
+if(removedItem?.isBonus){
+
+setBonusMl(0);
+
+setCodeActivated(false);
+
+showMessage(
+"ℹ️ Usunięto bonus — kod ponownie aktywny",
+"info"
+);
+
+}
+
+};
 
   // ================= SEND =================
 
@@ -446,7 +468,6 @@ setMl("");
 setStrength(null);
 setBase(null);
 setSelectedFlavor(null);
-setDiscountCode("");
 setBonusMl(0);
 setCodeActivated(false);
 
