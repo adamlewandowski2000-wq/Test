@@ -1161,7 +1161,7 @@ fontWeight:"bold"
           lineHeight: 1.5,
         }}
       >
-        🔥 Polecona osoba również otrzyma gratis 10ml
+        🔥 Polecona osoba również otrzyma <strong> +10ml gratis </strong>
       </div>
 
       <div
