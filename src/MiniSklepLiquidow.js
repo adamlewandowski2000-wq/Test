@@ -456,13 +456,10 @@ usedAromas[i.flavor.id]=
 
 });
 
-const hasBonusInCart =
-cart.some(
-item =>
-item.isBonus===true &&
-item.price===0
-);
 
+const usedCodeFinal =
+codeActivated &&
+cart.some(item => item.isBonus);
 try{
 
 localStorage.setItem(
@@ -517,7 +514,7 @@ total,
 usedAromas,
 
 usedCode:
-hasBonusInCart
+usedCodeFinal
 ? discountCode
 : null
 
