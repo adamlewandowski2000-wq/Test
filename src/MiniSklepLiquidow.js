@@ -489,10 +489,18 @@ name,
 orderText,
 total,
 usedAromas,
+
 usedCode:
-codeActivated
- ? discountCode
- : null
+
+cart.some(
+ item =>
+ item.isBonus===true
+)
+
+? discountCode
+
+: null
+
 })
 });
 
