@@ -332,19 +332,27 @@ showMessage(
 
 setShowReferralPopup(true);
 
+// usuń tylko dane sklepu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
 
+// zabezpieczenie — natychmiast zapisz pusty koszyk
+localStorage.setItem(
+  "miniSklepCart",
+  JSON.stringify([])
+);
 
-  
-
-  localStorage.clear();
-
-  setCart([]);
-  setName("");
-  setMl("");
-  setStrength(null);
-  setBase(null);
-  setSelectedFlavor(null);
-  setDiscountCode("");
+// wyczyść React state
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
 setBonusMl(0);
 
 
