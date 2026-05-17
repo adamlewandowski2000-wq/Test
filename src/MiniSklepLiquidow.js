@@ -450,6 +450,26 @@ try {
 setShowReferralPopup(true);
 setLastOrderTotal(total);
 
+const orderData={
+ name,
+ orderText,
+ total,
+ usedAromas,
+ usedCode:
+  codeActivated
+   ? discountCode
+   : null
+};
+
+await fetch(SHEET_API,{
+ method:"POST",
+ headers:{
+   "Content-Type":"application/json"
+ },
+ body:JSON.stringify(orderData)
+});
+
+// dopiero po wysłaniu:
 setOrderSent(true);
 
 localStorage.setItem(
@@ -457,7 +477,13 @@ localStorage.setItem(
  "1"
 );
 
-// czyść natychmiast UI
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
+
 setCart([]);
 setName("");
 setMl("");
@@ -468,35 +494,10 @@ setDiscountCode("");
 setBonusMl(0);
 setCodeActivated(false);
 
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-await fetch(SHEET_API,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-usedCode:
-codeActivated
-? discountCode
-: null
-})
-});
-
 showMessage(
 "✅ Zamówienie wysłane!",
 "success"
 );
-
 }
 catch(err){
 
