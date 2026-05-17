@@ -196,16 +196,9 @@ useEffect(() => {
    setStrength(null);
    setBase(null);
 
-   setSelectedFlavor(null);
-
-   setDiscountCode("");
-
-   setBonusMl(0);
-
-   setCodeActivated(false);
-
+   // TO ZOSTAW NA SAMYM KOŃCU:
    localStorage.removeItem(
-    "miniSklepOrderSent"
+     "miniSklepOrderSent"
    );
  }
 
@@ -406,8 +399,6 @@ setBonusMl(0);
 
 setCodeActivated(false);
 
-setDiscountCode("");
-
 showMessage(
 "ℹ️ Usunięto bonus — kod ponownie aktywny",
 "info"
@@ -420,82 +411,52 @@ showMessage(
   // ================= SEND =================
 
 const sendOrder = async () => {
+  if (!name)
+    return showMessage("❌ Podaj imię", "error");
 
-if(!name)
-return showMessage(
-"❌ Podaj imię",
-"error"
-);
+  if (cart.length === 0)
+    return showMessage("❌ Koszyk pusty", "error");
 
-if(cart.length===0)
-return showMessage(
-"❌ Koszyk pusty",
-"error"
-);
+  if (isSending) return;
 
-if(isSending) return;
+  setIsSending(true);
 
-setIsSending(true);
+  const orderText = cart
+    .map(
+      (i) =>
+        `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
+    )
+    .join("\n");
 
-const orderText = cart
-.map(
-i =>
-`${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
-)
-.join("\n");
+  const total = cart.reduce(
+    (s, i) => s + i.price,
+    0
+  );
 
-const total =
-cart.reduce(
-(s,i)=>s+i.price,
-0
-);
+  const usedAromas = {};
 
-const usedAromas={};
+  cart.forEach((i) => {
+    usedAromas[i.flavor.id] =
+      (usedAromas[i.flavor.id] || 0) + i.ml / 10;
+  });
 
-cart.forEach(i=>{
-
-usedAromas[i.flavor.id]=
-(usedAromas[i.flavor.id]||0)
-+i.ml/10;
-
-});
-
-try{
-
-setOrderSent(true);
-
-localStorage.setItem(
-"miniSklepOrderSent",
-"1"
-);
+try {
 
 setShowReferralPopup(true);
-
 setLastOrderTotal(total);
 
+setTimeout(() => {
+
 showMessage(
-"✅ Zamówienie wysłane!",
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
 "success"
 );
 
-
-
-await fetch(
-SHEET_API,
-{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-usedCode:
-codeActivated
-? discountCode
-: null
-})
-}
+localStorage.setItem(
+ "miniSklepOrderSent",
+ "1"
 );
+
 localStorage.removeItem("miniSklepCart");
 localStorage.removeItem("miniSklepName");
 localStorage.removeItem("miniSklepMl");
@@ -508,31 +469,79 @@ setName("");
 setMl("");
 setStrength(null);
 setBase(null);
-
 setSelectedFlavor(null);
-
-setDiscountCode("");
-
 setBonusMl(0);
-
 setCodeActivated(false);
-}catch(err){
 
-console.error(err);
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+
+usedCode:
+cart.some(
+i=>i.isBonus
+)
+? discountCode
+: null
+
+})
+});
+
+},0);
+
 
 showMessage(
-"❌ Problem z wysyłką",
-"error"
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
 );
 
-} finally {
 
-setOrderSent(false);
+// usuń tylko dane sklepu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-setIsSending(false);
+
+
+// wyczyść React state
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
+setBonusMl(0);
+
+
+} catch (err) {
+
+  console.error(err);
+
+  showMessage(
+    "❌ Problem z wysyłką",
+    "error"
+  );
+
+}finally {
+
+  setOrderSent(false);
+
+  setIsSending(false);
 
 }
 };
+  const total = cart.reduce(
+    (s, i) => s + i.price,
+    0
+  );
 
   // ================= CATEGORY =================
 
@@ -992,56 +1001,32 @@ transition:"all .2s"
 
 <div
   style={{
-    display:"flex",
-    alignItems:"center",
-    gap:12,
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
   }}
 >
+  <input
+    placeholder="Kod"
+    value={discountCode}
+    onChange={(e) =>
+      setDiscountCode(e.target.value)
+    }
+    style={{
+      width: "30%",
+      padding: "4px 6px",
+      fontSize: 18,
+    }}
+  />
 
-<input
-placeholder="Kod"
-value={discountCode}
-disabled={codeActivated}
-onChange={(e)=>
-setDiscountCode(
-e.target.value
-)}
-style={{
-width:"30%",
-padding:"4px 6px",
-fontSize:18,
-
-opacity:
-codeActivated
-? 0.6
-: 1
-}}
-/>
-
-<button
-disabled={codeActivated}
-onClick={checkDiscountCode}
-style={{
-padding:"8px 14px",
-
-opacity:
-codeActivated
-? .6
-: 1,
-
-cursor:
-codeActivated
-? "not-allowed"
-: "pointer"
-}}
->
-{
-codeActivated
-? "✅ Aktywny"
-: "Aktywuj"
-}
-</button>
-
+  <button
+    onClick={checkDiscountCode}
+    style={{
+      padding: "8px 14px"
+    }}
+  >
+    Aktywuj
+  </button>
 </div>
 
 {bonusMl > 0 && (
