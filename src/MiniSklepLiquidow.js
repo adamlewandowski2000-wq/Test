@@ -14,7 +14,12 @@ export default function MiniSklepLiquidow() {
     () => localStorage.getItem("miniSklepName") || ""
   );
 
-  const [discountCode,setDiscountCode]=useState("");
+ const [discountCode,setDiscountCode]=
+useState(
+()=>localStorage.getItem(
+"miniSklepCode"
+)||""
+);
 const [bonusMl,setBonusMl]=useState(0);
 const [codes,setCodes]=useState([]);
   const [ml, setMl] = useState(
@@ -100,6 +105,12 @@ const [lastOrderTotal, setLastOrderTotal] =
     localStorage.setItem("miniSklepCart", JSON.stringify(cart));
   }, [cart]);
 
+  useEffect(() => {
+  localStorage.setItem(
+    "miniSklepCode",
+    discountCode
+  );
+}, [discountCode]);
   // ================= VALIDATION =================
 
   useEffect(() => {
@@ -338,8 +349,9 @@ localStorage.removeItem("miniSklepName");
 localStorage.removeItem("miniSklepMl");
 localStorage.removeItem("miniSklepStrength");
 localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-// zabezpieczenie — natychmiast zapisz pusty koszyk
+// zabezpieczenie
 localStorage.setItem(
   "miniSklepCart",
   JSON.stringify([])
