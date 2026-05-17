@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbza9BtjXCr3dZ_U16HWzHZQGDNwfTXSHIXD3q3DeeU-cYQPbGhComaItPhbQIpsz0S8qQ/exec";
+  "https://script.google.com/macros/s/AKfycbyEEJrQN0Nf4UkW0jAbi23Pxvid1p8Aaf1OneJ-PyE_1YkIXjnWTjnlz-SKIC58uSY8/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -411,92 +411,102 @@ showMessage(
   // ================= SEND =================
 
 const sendOrder = async () => {
+  if (!name)
+    return showMessage("❌ Podaj imię", "error");
 
-if (!name)
-return showMessage(
-"❌ Podaj imię",
-"error"
-);
+  if (cart.length === 0)
+    return showMessage("❌ Koszyk pusty", "error");
 
-if(cart.length===0)
-return showMessage(
-"❌ Koszyk pusty",
-"error"
-);
+  if (isSending) return;
 
-if(isSending) return;
+  setIsSending(true);
 
-setIsSending(true);
-setOrderSent(true);
+  const orderText = cart
+    .map(
+      (i) =>
+        `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
+    )
+    .join("\n");
+
+  const total = cart.reduce(
+    (s, i) => s + i.price,
+    0
+  );
+
+  const usedAromas = {};
+
+  cart.forEach((i) => {
+    usedAromas[i.flavor.id] =
+      (usedAromas[i.flavor.id] || 0) + i.ml / 10;
+  });
+
+try {
 
 setShowReferralPopup(true);
-
-const orderText = cart
-.map(
-(i)=>
-`${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
-)
-.join("\n");
-
-const total=
-cart.reduce(
-(s,i)=>s+i.price,
-0
-);
-
 setLastOrderTotal(total);
 
-const usedAromas={};
+setTimeout(() => {
 
-cart.forEach(i=>{
-
-usedAromas[i.flavor.id]=
-(usedAromas[i.flavor.id]||0)
-+i.ml/10;
-
-});
-
-
-const usedCodeFinal =
-codeActivated &&
-cart.some(item => item.isBonus);
-
-  const realBonusItem = cart.find(
- item =>
- item.isBonus === true &&
- String(item.flavor?.id) === "BONUS"
+showMessage(
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
 );
-try{
 
 localStorage.setItem(
-"miniSklepOrderSent",
-"1"
+ "miniSklepOrderSent",
+ "1"
 );
 
-localStorage.removeItem(
-"miniSklepCart"
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
+
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setBonusMl(0);
+setCodeActivated(false);
+
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:
+codeActivated
+ ? discountCode
+ : null
+})
+});
+
+},0);
+
+
+showMessage(
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
 );
 
-localStorage.removeItem(
-"miniSklepName"
-);
 
-localStorage.removeItem(
-"miniSklepMl"
-);
+// usuń tylko dane sklepu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-localStorage.removeItem(
-"miniSklepStrength"
-);
 
-localStorage.removeItem(
-"miniSklepBase"
-);
 
-localStorage.removeItem(
-"miniSklepCode"
-);
-
+// wyczyść React state
 setCart([]);
 setName("");
 setMl("");
@@ -505,54 +515,30 @@ setBase(null);
 setSelectedFlavor(null);
 setDiscountCode("");
 setBonusMl(0);
-setCodeActivated(false);
 
-await fetch(SHEET_API,{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
 
-usedCode:
-realBonusItem
-? discountCode
-: null
+} catch (err) {
 
-})
-});
+  console.error(err);
 
-showMessage(
-"✅ Zamówienie wysłane!",
-"success"
-);
+  showMessage(
+    "❌ Problem z wysyłką",
+    "error"
+  );
 
-}catch(err){
+}finally {
 
-console.error(err);
+  setOrderSent(false);
 
-showMessage(
-"❌ Problem z wysyłką",
-"error"
-);
-
-}finally{
-
-setIsSending(false);
-
-setTimeout(()=>{
-
-localStorage.removeItem(
-"miniSklepOrderSent"
-);
-
-setOrderSent(false);
-
-},3000);
+  setIsSending(false);
 
 }
 };
+  const total = cart.reduce(
+    (s, i) => s + i.price,
+    0
+  );
+
   // ================= CATEGORY =================
 
    const categoryColors = {
@@ -1039,17 +1025,69 @@ transition:"all .2s"
   </button>
 </div>
 
-{bonusMl > 0 && (
+{codeActivated && bonusMl>0 && (
 <div
 style={{
 background:"#dcfce7",
 padding:10,
-borderRadius:8,
+borderRadius:10,
 marginTop:10,
+display:"flex",
+alignItems:"center",
+justifyContent:"space-between",
+border:"2px solid #22c55e"
+}}
+>
+
+<div>
+🎁 Kod aktywny:
+<strong>
+ {" "}
+{discountCode}
+</strong>
+
+<div
+style={{
+fontSize:12,
+marginTop:4
+}}
+>
+Gratis: {bonusMl}ml
+</div>
+</div>
+
+<button
+onClick={()=>{
+
+setDiscountCode("");
+
+setBonusMl(0);
+
+setCodeActivated(false);
+
+localStorage.removeItem(
+"miniSklepCode"
+);
+
+showMessage(
+"❌ Usunięto kod",
+"info"
+);
+
+}}
+style={{
+background:"#ef4444",
+color:"#fff",
+border:"none",
+padding:"6px 10px",
+borderRadius:8,
+cursor:"pointer",
 fontWeight:"bold"
 }}
 >
-🎁 Możesz dodać GRATIS {bonusMl}ml
+✖
+</button>
+
 </div>
 )}
 <h3>Koszyk</h3>
