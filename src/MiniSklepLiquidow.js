@@ -411,112 +411,89 @@ showMessage(
   // ================= SEND =================
 
 const sendOrder = async () => {
-  if (!name)
-    return showMessage("❌ Podaj imię", "error");
 
-  if (cart.length === 0)
-    return showMessage("❌ Koszyk pusty", "error");
+if (!name)
+return showMessage(
+"❌ Podaj imię",
+"error"
+);
 
-  if (isSending) return;
+if(cart.length===0)
+return showMessage(
+"❌ Koszyk pusty",
+"error"
+);
 
-  setIsSending(true);
+if(isSending) return;
 
-  const orderText = cart
-    .map(
-      (i) =>
-        `${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
-    )
-    .join("\n");
-
-  const total = cart.reduce(
-    (s, i) => s + i.price,
-    0
-  );
-
-  const usedAromas = {};
-
-  cart.forEach((i) => {
-    usedAromas[i.flavor.id] =
-      (usedAromas[i.flavor.id] || 0) + i.ml / 10;
-  });
-
-try {
+setIsSending(true);
+setOrderSent(true);
 
 setShowReferralPopup(true);
+
+const orderText = cart
+.map(
+(i)=>
+`${i.flavor.id}/${i.ml}ml/${i.strength}mg/${i.base}/${i.price.toFixed(2)}`
+)
+.join("\n");
+
+const total=
+cart.reduce(
+(s,i)=>s+i.price,
+0
+);
+
 setLastOrderTotal(total);
 
-setTimeout(() => {
+const usedAromas={};
 
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
+cart.forEach(i=>{
+
+usedAromas[i.flavor.id]=
+(usedAromas[i.flavor.id]||0)
++i.ml/10;
+
+});
+
+const hasBonusInCart =
+cart.some(
+item =>
+item.isBonus===true &&
+item.price===0
 );
+
+try{
 
 localStorage.setItem(
- "miniSklepOrderSent",
- "1"
+"miniSklepOrderSent",
+"1"
 );
 
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setBonusMl(0);
-setCodeActivated(false);
-
-fetch(SHEET_API,{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-fetch(SHEET_API,{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-
-usedCode:
-cart.some(
-i=>i.isBonus
-)
-? discountCode
-: null
-
-})
-});
-},0);
-
-
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
+localStorage.removeItem(
+"miniSklepCart"
 );
 
+localStorage.removeItem(
+"miniSklepName"
+);
 
-// usuń tylko dane sklepu
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
+localStorage.removeItem(
+"miniSklepMl"
+);
 
+localStorage.removeItem(
+"miniSklepStrength"
+);
 
+localStorage.removeItem(
+"miniSklepBase"
+);
 
-// wyczyść React state
+localStorage.removeItem(
+"miniSklepCode"
+);
+
 setCart([]);
 setName("");
 setMl("");
@@ -525,30 +502,59 @@ setBase(null);
 setSelectedFlavor(null);
 setDiscountCode("");
 setBonusMl(0);
+setCodeActivated(false);
 
+await fetch(
+SHEET_API,
+{
+method:"POST",
 
-} catch (err) {
+body:JSON.stringify({
 
-  console.error(err);
+name,
+orderText,
+total,
+usedAromas,
 
-  showMessage(
-    "❌ Problem z wysyłką",
-    "error"
-  );
+usedCode:
+hasBonusInCart
+? discountCode
+: null
 
-}finally {
+})
+}
+);
 
-  setOrderSent(false);
+showMessage(
+"✅ Zamówienie wysłane!",
+"success"
+);
 
-  setIsSending(false);
+}catch(err){
+
+console.error(err);
+
+showMessage(
+"❌ Problem z wysyłką",
+"error"
+);
+
+}finally{
+
+setIsSending(false);
+
+setTimeout(()=>{
+
+localStorage.removeItem(
+"miniSklepOrderSent"
+);
+
+setOrderSent(false);
+
+},3000);
 
 }
 };
-  const total = cart.reduce(
-    (s, i) => s + i.price,
-    0
-  );
-
   // ================= CATEGORY =================
 
    const categoryColors = {
