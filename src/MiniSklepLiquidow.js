@@ -21,6 +21,10 @@ useState(
 )||""
 );
 const [bonusMl,setBonusMl]=useState(0);
+
+const [codeActivated,setCodeActivated]=
+useState(false);
+
 const [codes,setCodes]=useState([]);
   const [ml, setMl] = useState(
     () => localStorage.getItem("miniSklepMl") || ""
@@ -305,12 +309,14 @@ useEffect(() => {
     return;
   }
 
-  setBonusMl(found.ml);
+setBonusMl(found.ml);
 
-  showMessage(
-    `🎁 Aktywowano gratis ${found.ml}ml`,
-    "success"
-  );
+setCodeActivated(true);
+
+showMessage(
+`🎁 Aktywowano gratis ${found.ml}ml`,
+"success"
+);
 };
   // ================= ADD TO CART =================
 
@@ -450,7 +456,10 @@ name,
 orderText,
 total,
 usedAromas,
-usedCode:discountCode || null
+usedCode:
+codeActivated
+ ? discountCode
+ : null
 })
 });
 
