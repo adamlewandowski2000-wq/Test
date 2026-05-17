@@ -470,19 +470,22 @@ localStorage.removeItem("miniSklepStrength");
 localStorage.removeItem("miniSklepBase");
 localStorage.removeItem("miniSklepCode");
 
-// wyślij w tle
-fetch(SHEET_API,{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-usedCode:
-codeActivated
-? discountCode
-: null
-})
+await fetch(SHEET_API,{
+ method:"POST",
+ keepalive:true,
+ headers:{
+   "Content-Type":"application/json"
+ },
+ body:JSON.stringify({
+   name,
+   orderText,
+   total,
+   usedAromas,
+   usedCode:
+     codeActivated
+     ? discountCode
+     : null
+ })
 });
 
 showMessage(
