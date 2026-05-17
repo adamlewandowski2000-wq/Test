@@ -783,60 +783,68 @@ setBonusMl(0);
 
 <h3>Baza</h3>
 
-{["Nikotyna", "Sól"].map((v) => {
-  const disabled =
-    v === "Nikotyna" &&
-    strength === 36;
+{["Nikotyna","Sól"].map((v)=>{
 
-  return (
-    <div
-      key={v}
-      onClick={() =>
-        !disabled &&
-        setBase(v.toLowerCase())
-      }
+const disabled =
+  v==="Nikotyna" &&
+  strength===36;
+
+return(
+<div
+key={v}
+onClick={()=>
+ !disabled &&
+ setBase(v.toLowerCase())
+}
+
 style={{
-  display:"inline-block",
-  width:70,
-  height:30,
-  marginRight:6,
-  border:"1px solid #000",
-  borderRadius:4,
-  textAlign:"center",
-  lineHeight:"30px",
+display:"inline-block",
+width:70,
+height:30,
+marginRight:6,
+border:"1px solid #000",
+borderRadius:4,
+textAlign:"center",
+lineHeight:"30px",
 
-  cursor:
-    disabled
-    ? "not-allowed"
-    : "pointer",
+cursor:
+disabled
+? "not-allowed"
+: "pointer",
 
-  opacity:
-    disabled ? 0.35 : 1,
+opacity:
+disabled
+? 0.35
+: 1,
 
-  filter:
-    disabled
-    ? "grayscale(100%)"
-    : "none",
+filter:
+disabled
+? "grayscale(100%)"
+: "none",
 
-  background:
-    base?.toLowerCase()===
-    v.toLowerCase()
-      ? "green"
-      : disabled
-      ? "#d1d5db"
-      : "#eee",
+background:
+base?.toLowerCase()===
+v.toLowerCase()
+? "green"
+: disabled
+? "#d1d5db"
+: "#eee",
 
-  color:
-    base?.toLowerCase()===
-    v.toLowerCase()
-      ? "#fff"
-      : disabled
-      ? "#6b7280"
-      : "#000",
+color:
+base?.toLowerCase()===
+v.toLowerCase()
+? "#fff"
+: disabled
+? "#6b7280"
+: "#000",
 
-  transition:"all .2s"
+transition:"all .2s"
 }}
-
+>
+{v}
+</div>
+);
+})}
 <h3>Moc</h3>
 
 {[6,12,18,24,36].map(v=>{
