@@ -399,11 +399,16 @@ setBonusMl(0);
 
 setCodeActivated(false);
 
+setDiscountCode("");
+
+localStorage.removeItem(
+"miniSklepCode"
+);
+
 showMessage(
 "ℹ️ Usunięto bonus — kod ponownie aktywny",
 "info"
 );
-
 }
 
 };
@@ -445,68 +450,14 @@ try {
 setShowReferralPopup(true);
 setLastOrderTotal(total);
 
-setTimeout(() => {
-
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
-);
+setOrderSent(true);
 
 localStorage.setItem(
  "miniSklepOrderSent",
  "1"
 );
 
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setBonusMl(0);
-setCodeActivated(false);
-
-fetch(SHEET_API,{
-method:"POST",
-body:JSON.stringify({
-name,
-orderText,
-total,
-usedAromas,
-usedCode:
-codeActivated
- ? discountCode
- : null
-})
-});
-
-},0);
-
-
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
-);
-
-
-// usuń tylko dane sklepu
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-
-
-// wyczyść React state
+// czyść natychmiast UI
 setCart([]);
 setName("");
 setMl("");
@@ -515,20 +466,52 @@ setBase(null);
 setSelectedFlavor(null);
 setDiscountCode("");
 setBonusMl(0);
+setCodeActivated(false);
 
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-} catch (err) {
+await fetch(SHEET_API,{
+method:"POST",
+keepalive:true,
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:
+codeActivated
+? discountCode
+: null
+})
+});
 
-  console.error(err);
+showMessage(
+"✅ Zamówienie wysłane!",
+"success"
+);
 
-  showMessage(
-    "❌ Problem z wysyłką",
-    "error"
-  );
+}
+catch(err){
 
-}finally {
+console.error(err);
 
-  setIsSending(false);
+showMessage(
+"❌ Problem z wysyłką",
+"error"
+);
+
+}
+finally{
+
+ setIsSending(false);
 
 }
 };
