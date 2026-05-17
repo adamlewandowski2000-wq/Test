@@ -310,26 +310,36 @@ const sendOrder = async () => {
   });
 
 try {
-  await fetch(SHEET_API, {
-    method: "POST",
-  body: JSON.stringify({
-  name,
-  orderText,
-  total,
-  usedAromas,
-  usedCode: discountCode || null
-}),
-  });
 
 setLastOrderTotal(total);
 
-showMessage(
-  "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-  "success"
-);
-
 setShowReferralPopup(true);
 
+showMessage(
+"⏳ Wysyłanie zamówienia...",
+"success"
+);
+
+await new Promise(
+ resolve=>setTimeout(resolve,50)
+);
+
+await fetch(SHEET_API,{
+ method:"POST",
+ body:JSON.stringify({
+   name,
+   orderText,
+   total,
+   usedAromas,
+   usedCode:
+     discountCode || null
+ })
+});
+
+showMessage(
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
+);
 
 
   
