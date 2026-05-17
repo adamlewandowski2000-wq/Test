@@ -153,26 +153,50 @@ useEffect(() => {
 
 }, [discountCode,orderSent]);
 
-  useEffect(()=>{
+useEffect(() => {
 
-const sent=
-localStorage.getItem(
-"miniSklepOrderSent"
-);
+ const sent =
+ localStorage.getItem(
+   "miniSklepOrderSent"
+ );
 
-if(sent==="1"){
+ if(sent==="1"){
 
-localStorage.removeItem(
-"miniSklepOrderSent"
-);
+   localStorage.removeItem(
+    "miniSklepCart"
+   );
 
-localStorage.removeItem(
-"miniSklepCart"
-);
+   localStorage.removeItem(
+    "miniSklepName"
+   );
 
-setCart([]);
+   localStorage.removeItem(
+    "miniSklepMl"
+   );
 
-}
+   localStorage.removeItem(
+    "miniSklepStrength"
+   );
+
+   localStorage.removeItem(
+    "miniSklepBase"
+   );
+
+   localStorage.removeItem(
+    "miniSklepCode"
+   );
+
+   setCart([]);
+   setName("");
+   setMl("");
+   setStrength(null);
+   setBase(null);
+
+   // TO ZOSTAW NA SAMYM KOŃCU:
+   localStorage.removeItem(
+     "miniSklepOrderSent"
+   );
+ }
 
 },[]);
   // ================= VALIDATION =================
@@ -396,22 +420,6 @@ localStorage.setItem(
  "1"
 );
 
-// czyść od razu
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setDiscountCode("");
-setBonusMl(0);
 
 await fetch(SHEET_API,{
     method: "POST",
@@ -431,7 +439,6 @@ showMessage(
   "success"
 );
 
-setShowReferralPopup(true);
 
 // usuń tylko dane sklepu
 localStorage.removeItem("miniSklepCart");
@@ -441,11 +448,7 @@ localStorage.removeItem("miniSklepStrength");
 localStorage.removeItem("miniSklepBase");
 localStorage.removeItem("miniSklepCode");
 
-// zabezpieczenie
-localStorage.setItem(
-  "miniSklepCart",
-  JSON.stringify([])
-);
+
 
 // wyczyść React state
 setCart([]);
@@ -467,8 +470,12 @@ setBonusMl(0);
     "error"
   );
 
-} finally {
+}finally {
+
+  setOrderSent(false);
+
   setIsSending(false);
+
 }
 };
   const total = cart.reduce(
