@@ -460,6 +460,12 @@ usedAromas[i.flavor.id]=
 const usedCodeFinal =
 codeActivated &&
 cart.some(item => item.isBonus);
+
+  const realBonusItem = cart.find(
+ item =>
+ item.isBonus === true &&
+ String(item.flavor?.id) === "BONUS"
+);
 try{
 
 localStorage.setItem(
@@ -501,26 +507,21 @@ setDiscountCode("");
 setBonusMl(0);
 setCodeActivated(false);
 
-await fetch(
-SHEET_API,
-{
+await fetch(SHEET_API,{
 method:"POST",
-
 body:JSON.stringify({
-
 name,
 orderText,
 total,
 usedAromas,
 
 usedCode:
-usedCodeFinal
+realBonusItem
 ? discountCode
 : null
 
 })
-}
-);
+});
 
 showMessage(
 "✅ Zamówienie wysłane!",
