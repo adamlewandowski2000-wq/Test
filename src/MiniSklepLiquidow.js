@@ -1161,8 +1161,7 @@ fontWeight:"bold"
           lineHeight: 1.5,
         }}
       >
-        🔥 Polecona osoba również otrzyma bonus
-        do pierwszego zamówienia.
+        🔥 Polecona osoba również otrzyma gratis 10ml
       </div>
 
       <div
