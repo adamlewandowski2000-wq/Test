@@ -303,13 +303,22 @@ useEffect(() => {
       Number(i.active) === 1
   );
 
-  if (!found) {
-    showMessage(
-      "❌ Kod nieaktywny lub nieprawidłowy",
-      "error"
-    );
-    return;
-  }
+ if (!found) {
+
+setBonusMl(0);
+
+setCodeActivated(false);
+
+setDiscountCode("");
+
+showMessage(
+"❌ Kod nieaktywny lub nieprawidłowy",
+"error"
+);
+
+return;
+
+}
 
 setBonusMl(found.ml);
 
