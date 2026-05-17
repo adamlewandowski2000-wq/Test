@@ -795,34 +795,47 @@ setBonusMl(0);
         !disabled &&
         setBase(v.toLowerCase())
       }
-      style={{
-        display: "inline-block",
-        width: 70,
-        height: 30,
-        marginRight: 6,
-        border: "1px solid #000",
-        borderRadius: 4,
-        textAlign: "center",
-        lineHeight: "30px",
-        cursor: disabled
-          ? "not-allowed"
-          : "pointer",
-        background:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "green"
-            : "#eee",
-        color:
-          base?.toLowerCase() ===
-          v.toLowerCase()
-            ? "#fff"
-            : "#000",
-      }}
-    >
-      {v}
-    </div>
-  );
-})}
+style={{
+  display:"inline-block",
+  width:70,
+  height:30,
+  marginRight:6,
+  border:"1px solid #000",
+  borderRadius:4,
+  textAlign:"center",
+  lineHeight:"30px",
+
+  cursor:
+    disabled
+    ? "not-allowed"
+    : "pointer",
+
+  opacity:
+    disabled ? 0.35 : 1,
+
+  filter:
+    disabled
+    ? "grayscale(100%)"
+    : "none",
+
+  background:
+    base?.toLowerCase()===
+    v.toLowerCase()
+      ? "green"
+      : disabled
+      ? "#d1d5db"
+      : "#eee",
+
+  color:
+    base?.toLowerCase()===
+    v.toLowerCase()
+      ? "#fff"
+      : disabled
+      ? "#6b7280"
+      : "#000",
+
+  transition:"all .2s"
+}}
 
 <h3>Moc</h3>
 
