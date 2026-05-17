@@ -50,6 +50,9 @@ const [showReferralPopup, setShowReferralPopup] =
 const [lastOrderTotal, setLastOrderTotal] =
   useState(0);
 
+const [orderSent,setOrderSent]=
+useState(false);
+
 
 
   // ================= HELPERS =================
@@ -85,32 +88,93 @@ const [lastOrderTotal, setLastOrderTotal] =
 
   // ================= SAVE =================
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepName", name);
-  }, [name]);
+useEffect(() => {
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepMl", ml);
-  }, [ml]);
+ if(orderSent) return;
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepStrength", strength ?? "");
-  }, [strength]);
+ localStorage.setItem(
+   "miniSklepName",
+   name
+ );
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepBase", base ?? "");
-  }, [base]);
+}, [name,orderSent]);
+useEffect(() => {
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepCart", JSON.stringify(cart));
-  }, [cart]);
+ if(orderSent) return;
 
-  useEffect(() => {
-  localStorage.setItem(
-    "miniSklepCode",
-    discountCode
-  );
-}, [discountCode]);
+ localStorage.setItem(
+   "miniSklepMl",
+   ml
+ );
+
+}, [ml,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepStrength",
+   strength ?? ""
+ );
+
+}, [strength,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepBase",
+   base ?? ""
+ );
+
+}, [base,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepCart",
+   JSON.stringify(cart)
+ );
+
+}, [cart,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepCode",
+   discountCode
+ );
+
+}, [discountCode,orderSent]);
+
+  useEffect(()=>{
+
+const sent=
+localStorage.getItem(
+"miniSklepOrderSent"
+);
+
+if(sent==="1"){
+
+localStorage.removeItem(
+"miniSklepOrderSent"
+);
+
+localStorage.removeItem(
+"miniSklepCart"
+);
+
+setCart([]);
+
+}
+
+},[]);
   // ================= VALIDATION =================
 
   useEffect(() => {
@@ -323,7 +387,33 @@ const sendOrder = async () => {
   });
 
 try {
-  await fetch(SHEET_API, {
+
+setOrderSent(true);
+
+// natychmiast zatrzymaj dalszy zapis do localStorage
+localStorage.setItem(
+ "miniSklepOrderSent",
+ "1"
+);
+
+// czyść od razu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
+
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
+setBonusMl(0);
+
+await fetch(SHEET_API,{
     method: "POST",
   body: JSON.stringify({
   name,
