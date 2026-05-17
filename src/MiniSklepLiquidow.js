@@ -744,7 +744,7 @@ setBonusMl(0);
     <>
   {f.id}. {f.name}
 
-  {[1, 14, 27, 36].includes(f.id) && (
+  {[1, 21, 29, 34, 37, 39, 41, 45, 52].includes(f.id) && (
     <span className="bestseller">
       🔥 BESTSELLER
     </span>
