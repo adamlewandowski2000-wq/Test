@@ -434,9 +434,11 @@ await fetch(SHEET_API,{
 
 setLastOrderTotal(total);
 
+setShowReferralPopup(true);
+
 showMessage(
-  "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-  "success"
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
+"success"
 );
 
 
