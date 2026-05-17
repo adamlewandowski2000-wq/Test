@@ -81,7 +81,7 @@ useState(false);
 
     fetchInventory();
 
-    const interval = setInterval(fetchInventory, 10000);
+    const interval = setInterval(fetchInventory, 5000);
 
     return () => clearInterval(interval);
   }, []);
