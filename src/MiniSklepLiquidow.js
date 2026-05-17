@@ -1,3 +1,6 @@
+ssa
+
+
 import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
@@ -12,8 +15,17 @@ export default function MiniSklepLiquidow() {
     () => localStorage.getItem("miniSklepName") || ""
   );
 
-  const [discountCode,setDiscountCode]=useState("");
+ const [discountCode,setDiscountCode]=
+useState(
+()=>localStorage.getItem(
+"miniSklepCode"
+)||""
+);
 const [bonusMl,setBonusMl]=useState(0);
+
+const [codeActivated,setCodeActivated]=
+useState(false);
+
 const [codes,setCodes]=useState([]);
   const [ml, setMl] = useState(
     () => localStorage.getItem("miniSklepMl") || ""
@@ -42,6 +54,9 @@ const [showReferralPopup, setShowReferralPopup] =
  
 const [lastOrderTotal, setLastOrderTotal] =
   useState(0);
+
+const [orderSent,setOrderSent]=
+useState(false);
 
 
 
@@ -78,26 +93,117 @@ const [lastOrderTotal, setLastOrderTotal] =
 
   // ================= SAVE =================
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepName", name);
-  }, [name]);
+useEffect(() => {
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepMl", ml);
-  }, [ml]);
+ if(orderSent) return;
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepStrength", strength ?? "");
-  }, [strength]);
+ localStorage.setItem(
+   "miniSklepName",
+   name
+ );
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepBase", base ?? "");
-  }, [base]);
+}, [name,orderSent]);
+useEffect(() => {
 
-  useEffect(() => {
-    localStorage.setItem("miniSklepCart", JSON.stringify(cart));
-  }, [cart]);
+ if(orderSent) return;
 
+ localStorage.setItem(
+   "miniSklepMl",
+   ml
+ );
+
+}, [ml,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepStrength",
+   strength ?? ""
+ );
+
+}, [strength,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepBase",
+   base ?? ""
+ );
+
+}, [base,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepCart",
+   JSON.stringify(cart)
+ );
+
+}, [cart,orderSent]);
+
+useEffect(() => {
+
+ if(orderSent) return;
+
+ localStorage.setItem(
+   "miniSklepCode",
+   discountCode
+ );
+
+}, [discountCode,orderSent]);
+
+useEffect(() => {
+
+ const sent =
+ localStorage.getItem(
+   "miniSklepOrderSent"
+ );
+
+ if(sent==="1"){
+
+   localStorage.removeItem(
+    "miniSklepCart"
+   );
+
+   localStorage.removeItem(
+    "miniSklepName"
+   );
+
+   localStorage.removeItem(
+    "miniSklepMl"
+   );
+
+   localStorage.removeItem(
+    "miniSklepStrength"
+   );
+
+   localStorage.removeItem(
+    "miniSklepBase"
+   );
+
+   localStorage.removeItem(
+    "miniSklepCode"
+   );
+
+   setCart([]);
+   setName("");
+   setMl("");
+   setStrength(null);
+   setBase(null);
+
+   // TO ZOSTAW NA SAMYM KOŃCU:
+   localStorage.removeItem(
+     "miniSklepOrderSent"
+   );
+ }
+
+},[]);
   // ================= VALIDATION =================
 
   useEffect(() => {
@@ -165,6 +271,8 @@ const [lastOrderTotal, setLastOrderTotal] =
     const num30 = Math.floor(remainder / 30);
 
     if (num30 > 0) {
+
+  
       const price30 = (() => {
         if (baseType === "nikotyna") {
           if ([6, 12].includes(strength)) return 32.5;
@@ -204,12 +312,14 @@ const [lastOrderTotal, setLastOrderTotal] =
     return;
   }
 
-  setBonusMl(found.ml);
+setBonusMl(found.ml);
 
-  showMessage(
-    `🎁 Aktywowano gratis ${found.ml}ml`,
-    "success"
-  );
+setCodeActivated(true);
+
+showMessage(
+`🎁 Aktywowano gratis ${found.ml}ml`,
+"success"
+);
 };
   // ================= ADD TO CART =================
 
@@ -274,8 +384,30 @@ if (
     showMessage("✅ Dodano do koszyka", "success");
   };
 
-  const removeItem = (idx) =>
-    setCart(cart.filter((_, i) => i !== idx));
+  const removeItem = (idx) => {
+
+const removedItem = cart[idx];
+
+const newCart =
+cart.filter((_,i)=>i!==idx);
+
+setCart(newCart);
+
+// jeśli usunięto gratis
+if(removedItem?.isBonus){
+
+setBonusMl(0);
+
+setCodeActivated(false);
+
+showMessage(
+"ℹ️ Usunięto bonus — kod ponownie aktywny",
+"info"
+);
+
+}
+
+};
 
   // ================= SEND =================
 
@@ -311,30 +443,53 @@ const sendOrder = async () => {
 
 try {
 
+setShowReferralPopup(true);
 setLastOrderTotal(total);
 
-setShowReferralPopup(true);
+setTimeout(() => {
 
 showMessage(
-"⏳ Wysyłanie zamówienia...",
+"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
 "success"
 );
 
-await new Promise(
- resolve=>setTimeout(resolve,50)
+localStorage.setItem(
+ "miniSklepOrderSent",
+ "1"
 );
 
-await fetch(SHEET_API,{
- method:"POST",
- body:JSON.stringify({
-   name,
-   orderText,
-   total,
-   usedAromas,
-   usedCode:
-     discountCode || null
- })
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
+
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setBonusMl(0);
+setCodeActivated(false);
+
+fetch(SHEET_API,{
+method:"POST",
+body:JSON.stringify({
+name,
+orderText,
+total,
+usedAromas,
+usedCode:
+codeActivated
+ ? discountCode
+ : null
+})
 });
+
+},0);
+
 
 showMessage(
 "✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
@@ -342,17 +497,24 @@ showMessage(
 );
 
 
-  
+// usuń tylko dane sklepu
+localStorage.removeItem("miniSklepCart");
+localStorage.removeItem("miniSklepName");
+localStorage.removeItem("miniSklepMl");
+localStorage.removeItem("miniSklepStrength");
+localStorage.removeItem("miniSklepBase");
+localStorage.removeItem("miniSklepCode");
 
-  localStorage.clear();
 
-  setCart([]);
-  setName("");
-  setMl("");
-  setStrength(null);
-  setBase(null);
-  setSelectedFlavor(null);
-  setDiscountCode("");
+
+// wyczyść React state
+setCart([]);
+setName("");
+setMl("");
+setStrength(null);
+setBase(null);
+setSelectedFlavor(null);
+setDiscountCode("");
 setBonusMl(0);
 
 
@@ -365,8 +527,12 @@ setBonusMl(0);
     "error"
   );
 
-} finally {
+}finally {
+
+  setOrderSent(false);
+
   setIsSending(false);
+
 }
 };
   const total = cart.reduce(
@@ -581,7 +747,7 @@ setBonusMl(0);
     <>
   {f.id}. {f.name}
 
-  {[1, 14, 27, 36].includes(f.id) && (
+  {[1, 21, 29, 34, 37, 39, 41, 45, 52].includes(f.id) && (
     <span className="bestseller">
       🔥 BESTSELLER
     </span>
@@ -736,7 +902,6 @@ transition:"all .2s"
     </div>
   );
 })}
-
 
 <h3>Ilość (ml)</h3>
 
@@ -1038,8 +1203,7 @@ fontWeight:"bold"
           lineHeight: 1.5,
         }}
       >
-        🔥 Polecona osoba również otrzyma bonus
-        do pierwszego zamówienia.
+        🔥 Polecona osoba również otrzyma <strong> +10ml gratis </strong>
       </div>
 
       <div
