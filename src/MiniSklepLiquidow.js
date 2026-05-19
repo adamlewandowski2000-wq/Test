@@ -507,32 +507,6 @@ cart.some(
 },0);
 
 
-showMessage(
-"✅ Zamówienie wysłane! Odezwij się po odbiór 😎",
-"success"
-);
-
-
-// usuń tylko dane sklepu
-localStorage.removeItem("miniSklepCart");
-localStorage.removeItem("miniSklepName");
-localStorage.removeItem("miniSklepMl");
-localStorage.removeItem("miniSklepStrength");
-localStorage.removeItem("miniSklepBase");
-localStorage.removeItem("miniSklepCode");
-
-
-
-// wyczyść React state
-setCart([]);
-setName("");
-setMl("");
-setStrength(null);
-setBase(null);
-setSelectedFlavor(null);
-setDiscountCode("");
-setBonusMl(0);
-
 
 } catch (err) {
 
