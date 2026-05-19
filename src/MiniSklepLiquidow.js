@@ -479,6 +479,7 @@ setMl("");
 setStrength(null);
 setBase(null);
 setSelectedFlavor(null);
+setDiscountCode("");
 setBonusMl(0);
 setCodeActivated(false);
 
