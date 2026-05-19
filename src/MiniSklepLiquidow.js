@@ -1189,7 +1189,7 @@ fontWeight:"bold"
           fontSize: 28,
         }}
       >
-        ✅ Zamówienie przyjęte
+        ✅ Zamówienie wysłane! Odezwij się po odbiór 😎
       </h2>
 
       <div
