@@ -1183,15 +1183,19 @@ fontWeight:"bold"
         boxShadow: "0 0 25px rgba(0,0,0,.3)",
       }}
     >
-      <h2
-        style={{
-          marginTop: 0,
-          color: "#16a34a",
-          fontSize: 28,
-        }}
-      >
-        ✅ Zamówienie wysłane! Odezwij się po odbiór 😎
-      </h2>
+ <h2
+  style={{
+    marginTop:0,
+    color:"#16a34a",
+    fontSize:28,
+    textAlign:"center",
+    lineHeight:1.5
+  }}
+>
+  ✅ Zamówienie wysłane!
+  <br />
+  Odezwij się po odbiór 😎
+</h2>
 
       <div
         style={{
