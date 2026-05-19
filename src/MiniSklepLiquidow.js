@@ -325,7 +325,7 @@ setBonusMl(found.ml);
 setCodeActivated(true);
 
 showMessage(
-`🎁 Aktywowano gratis ${found.ml}ml`,
+`🎁 Możesz dodać do koszyka ${found.ml}ml`,
 "success"
 );
 };
