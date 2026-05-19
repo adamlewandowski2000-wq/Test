@@ -994,18 +994,40 @@ transition:"all .2s"
     gap: 12,
   }}
 >
-  <input
-    placeholder="Kod"
-    value={discountCode}
-    onChange={(e) =>
-      setDiscountCode(e.target.value)
-    }
-    style={{
-      width: "30%",
-      padding: "4px 6px",
-      fontSize: 18,
-    }}
-  />
+<input
+placeholder="Kod"
+
+value={discountCode}
+
+disabled={codeActivated}
+
+onChange={(e)=>
+setDiscountCode(
+e.target.value
+)
+}
+
+style={{
+width:"30%",
+padding:"4px 6px",
+fontSize:18,
+
+background:
+codeActivated
+? "#e5e7eb"
+: "#fff",
+
+opacity:
+codeActivated
+? .6
+: 1,
+
+cursor:
+codeActivated
+? "not-allowed"
+: "text"
+}}
+/>
 
   <button
     onClick={checkDiscountCode}
