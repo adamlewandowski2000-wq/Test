@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import bg from "./assets/bg-liquid.png";
 
 const SHEET_API =
-  "https://script.google.com/macros/s/AKfycbza9BtjXCr3dZ_U16HWzHZQGDNwfTXSHIXD3q3DeeU-cYQPbGhComaItPhbQIpsz0S8qQ/exec";
+   "https://script.google.com/macros/s/AKfycbza9BtjXCr3dZ_U16HWzHZQGDNwfTXSHIXD3q3DeeU-cYQPbGhComaItPhbQIpsz0S8qQ/exec";
 
 export default function MiniSklepLiquidow() {
   const [serverInventory, setServerInventory] = useState({});
@@ -325,7 +325,7 @@ setBonusMl(found.ml);
 setCodeActivated(true);
 
 showMessage(
-🎁 Możesz dodać do koszyka ${found.ml}ml gratis,
+`🎁 Możesz dodać do koszyka ${found.ml}ml`,
 "success"
 );
 };
@@ -421,7 +421,7 @@ showMessage(
 
 const sendOrder = async () => {
 
-  if (
+   if (
   codeActivated &&
   !cart.some(item => item.isBonus)
 ) {
